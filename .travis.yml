@@ -3,7 +3,12 @@ language: node_js
 node_js:
   - "14"
 
+env:
+  - APP_DIR=react-dapp
+  - APP_DIR=angular-dapp
+  - APP_DIR=vue-dapp
+
 script:
-    - cd vue-dapp
-    - npm ci
-    - npm run build
+  - cd $APP_DIR
+  - npm ci
+  - npm run build
