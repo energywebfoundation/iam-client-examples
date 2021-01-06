@@ -1,0 +1,9 @@
+language: node_js
+
+node_js:
+  - "14"
+
+script:
+    - cd vue-dapp
+    - npm ci
+    - npm run build
