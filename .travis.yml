@@ -20,4 +20,4 @@ deploy:
   script: rsync -e "ssh -o StrictHostKeyChecking=no" -rv dist $SERVER_USER@$SERVER_HOST:~/client-lib-examples/$APP_DIR
   skip_cleanup: true
   on:
-    all_branches: true
+    branch: master
