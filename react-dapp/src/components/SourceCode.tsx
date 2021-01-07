@@ -6,7 +6,7 @@ function SourceCode() {
     return (
       <div className="source-code">
         <p>Source code:</p>
-        <a href="https://github.com/energywebfoundation/iam-client-lib/tree/develop/examples/react-dapp">
+        <a href="https://github.com/energywebfoundation/iam-client-examples/tree/master/react-dapp">
           <img alt="GitHub Logo. Link to source code" src={githubLogo}/>
         </a>
       </div>
