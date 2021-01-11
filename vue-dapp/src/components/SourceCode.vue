@@ -2,7 +2,7 @@
   <div class="source-code">
     <p>Source code:</p>
     <a
-      href="https://github.com/energywebfoundation/iam-client-lib/tree/develop/examples/vue-dapp"
+      href="https://github.com/energywebfoundation/iam-client-examples/tree/master/vue-dapp"
     >
       <img src="../assets/GitHub-Mark-32px.png" />
     </a>

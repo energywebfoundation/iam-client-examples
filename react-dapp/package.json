@@ -11,7 +11,7 @@
     "@types/react": "^16.9.53",
     "@types/react-dom": "^16.9.8",
     "axios": "^0.21.1",
-    "iam-client-lib": "git+https://github.com/energywebfoundation/iam-client-lib.git#develop",
+    "iam-client-lib": "^1.0.4",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
     "react-scripts": "4.0.1",
@@ -19,7 +19,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build",
+    "build": "CI=false react-scripts build && mv build dist",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
