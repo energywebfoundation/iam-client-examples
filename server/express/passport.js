@@ -1,5 +1,5 @@
 const passport = require('passport');
-const { LoginStrategy } = require('../../../dist')
+const { LoginStrategy } = require('passport-did-auth')
 
 const LOGIN_STRATEGY = 'login'
 

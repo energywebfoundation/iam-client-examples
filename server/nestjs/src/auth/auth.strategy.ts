@@ -1,4 +1,4 @@
-import { LoginStrategy } from '../../../../../dist';
+import { LoginStrategy } from 'passport-did-auth';
 import { Injectable } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 
