@@ -31,7 +31,7 @@ function App() {
   const verifyIdentity = async function () {
     const claim = await iam.createIdentityProof();
     const { data } = await axios.post<{ token: string }>(
-      "https://did-auth-demo.energyweb.org/login",
+      "http://localhost:3333/login",
       {
         claim
       }
@@ -40,7 +40,7 @@ function App() {
       headers: { Authorization: `Bearer ${data.token}` }
     };
     const { data: roles } = await axios.get<Role[]>(
-      "https://did-auth-demo.energyweb.org/roles",
+      "http://localhost:3333/roles",
       config
     );
     setRoles(roles);
