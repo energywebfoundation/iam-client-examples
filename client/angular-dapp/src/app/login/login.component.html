@@ -22,7 +22,7 @@
         </div>
       </ng-template>
       <div class="logoutContainer">
-        <a *ngIf="enrolmentUrl" href="enrolmentUrl" class="button">
+        <a *ngIf="enrolmentURL" href="{{enrolmentURL}}" class="button">
           <span>Enrol to test role</span>
         </a>
         <button (click)="logout()" class="button">
