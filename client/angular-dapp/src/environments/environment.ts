@@ -3,7 +3,9 @@
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
-  production: false
+  production: false,
+  ENROLMENT_URL: '',
+  BACKEND_URL: 'https://did-auth-demo.energyweb.org',
 };
 
 /*
