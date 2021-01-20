@@ -5,6 +5,7 @@ import { IAM, CacheServerClient } from 'iam-client-lib'
 import axios from 'axios'
 import logo from './assets/logo.svg'
 import metamaskLogo from './assets/metamask-logo.svg'
+import { config } from './config'
 import walletconnectIcon from './assets/wallet-connect-icon.svg'
 import Spinner from './components/Spinner'
 import SourceCode from './components/SourceCode'
@@ -31,17 +32,17 @@ function App() {
   const verifyIdentity = async function () {
     const claim = await iam.createIdentityProof();
     const { data } = await axios.post<{ token: string }>(
-      "http://localhost:3333/login",
+      `${config.backendUrl}/login`,
       {
         claim
       }
     );
-    const config = {
+    const requestConfig = {
       headers: { Authorization: `Bearer ${data.token}` }
     };
     const { data: roles } = await axios.get<Role[]>(
-      "http://localhost:3333/roles",
-      config
+      `${config.backendUrl}/roles`,
+      requestConfig
     );
     setRoles(roles);
   }
