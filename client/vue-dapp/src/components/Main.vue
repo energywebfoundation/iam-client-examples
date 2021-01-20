@@ -18,10 +18,13 @@
         </p>
       </div>
       <div v-else>
-        You do not have any issued role at the moment, please login into switchboard and search for
-        apps, orgs to enrol.
+        You do not have any issued role at the moment, please login into
+        switchboard and search for apps, orgs to enrol.
       </div>
       <div class="logoutContainer">
+        <a v-if="enrolmentUrl" :href="enrolmentUrl" class="button">
+          <span>Enrol to test role</span>
+        </a>
         <button @click="logout" class="button">
           <span>Logout</span>
         </button>
@@ -32,8 +35,8 @@
         <p>
           Error occured with login.<br />
           If you rejected the signing requests, please try again and accept.<br />
-          If this is your first time logging in, your account needs a small amount of Volta token to
-          create a DID Document.<br />
+          If this is your first time logging in, your account needs a small
+          amount of Volta token to create a DID Document.<br />
           A Volta token can be obtained from the
           <a href="https://voltafaucet.energyweb.org/">Volta Faucet</a>.
         </p>
@@ -56,6 +59,7 @@
 import Vue from "vue";
 import Spinner from "./Spinner.vue";
 import axios from "axios";
+import { config } from '../config'
 
 type Role = {
   name: string;
@@ -72,12 +76,14 @@ export default Vue.extend({
     errored: boolean;
     did?: string;
     roles: Role[];
+    enrolmentUrl?: string;
   } {
     return {
       isLoading: false,
       errored: false,
       did: "",
-      roles: []
+      roles: [],
+      enrolmentUrl: config.enrolmentUrl
     };
   },
   methods: {
@@ -85,19 +91,23 @@ export default Vue.extend({
       const claim = await this.$IAM.createIdentityProof();
       const {
         data: { token }
-      } = await axios.post<{ token: string }>("https://did-auth-demo.energyweb.org/login", {
+      } = await axios.post<{ token: string }>(`${config.backendUrl}/login`, {
         claim
       });
-      const config = {
+      const options = {
         headers: { Authorization: `Bearer ${token}` }
       };
       const { data: roles } = await axios.get<Role[]>(
-        "https://did-auth-demo.energyweb.org/roles",
-        config
+        `${config.backendUrl}/roles`,
+        options
       );
       this.roles = roles;
     },
-    login: async function({ useMetamaskExtension }: { useMetamaskExtension: boolean }) {
+    login: async function({
+      useMetamaskExtension
+    }: {
+      useMetamaskExtension: boolean;
+    }) {
       this.isLoading = true;
       this.errored = false;
       try {
@@ -148,6 +158,7 @@ export default Vue.extend({
   user-select: none;
   display: flex;
   align-items: center;
+  text-decoration: none;
   &:hover {
     background-color: #3b9d71;
   }

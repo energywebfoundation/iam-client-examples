@@ -26,6 +26,7 @@
   user-select: none;
   display: flex;
   align-items: center;
+  text-decoration: none;
 }
 
 .button:hover {

@@ -1,35 +1,42 @@
 import { Component } from '@angular/core';
-import axios from 'axios'
+import axios from 'axios';
 import { IamService } from '../iam.service';
+import { environment } from '../../environments/environment';
+
+type Role = {
+  name: string;
+  namespace: string;
+};
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
-  styleUrls: ['./login.component.css']
+  styleUrls: ['./login.component.css'],
 })
 export class LoginComponent {
+  constructor(private readonly iamService: IamService) {}
 
-  constructor(
-    private readonly iamService: IamService
-  ) { }
-
-  isLoading = false
-  errored = false
-  did: string = undefined
-  roles: Role[] = []
+  isLoading = false;
+  errored = false;
+  did: string = undefined;
+  enrolmentURL = environment.ENROLMENT_URL;
+  roles: Role[] = [];
 
   async verifyIdentity() {
     const claim = await this.iamService.iam.createIdentityProof();
     const {
-      data: { token }
-    } = await axios.post<{ token: string }>("https://did-auth-demo.energyweb.org/login", {
-      claim
-    });
+      data: { token },
+    } = await axios.post<{ token: string }>(
+      `${environment.BACKEND_URL}/login`,
+      {
+        claim,
+      }
+    );
     const config = {
-      headers: { Authorization: `Bearer ${token}` }
+      headers: { Authorization: `Bearer ${token}` },
     };
     const { data: roles } = await axios.get<Role[]>(
-      "https://did-auth-demo.energyweb.org/roles",
+      `${environment.BACKEND_URL}/roles`,
       config
     );
     this.roles = roles;
@@ -39,7 +46,9 @@ export class LoginComponent {
     this.isLoading = true;
     this.errored = false;
     try {
-      const { did } = await this.iamService.iam.initializeConnection({ useMetamaskExtension });
+      const { did } = await this.iamService.iam.initializeConnection({
+        useMetamaskExtension,
+      });
       if (did) {
         this.did = did;
         await this.verifyIdentity();
@@ -52,11 +61,6 @@ export class LoginComponent {
   }
 
   logout() {
-    this.did = "";
+    this.did = '';
   }
 }
-
-type Role = {
-  name: string;
-  namespace: string;
-};

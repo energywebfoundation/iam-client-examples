@@ -1,5 +1,5 @@
 .button {
-  background-color: #61DBFB;
+  background-color: #61dbfb;
   padding: 20px 24px;
   margin: 8px;
   border: none;
@@ -11,9 +11,10 @@
   user-select: none;
   display: flex;
   align-items: center;
+  text-decoration: none;
 }
 
-button:hover {
+.button:hover {
   background-color: #05b3e1;
 }
 
