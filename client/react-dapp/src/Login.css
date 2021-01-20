@@ -14,7 +14,7 @@
   text-decoration: none;
 }
 
-button:hover {
+.button:hover {
   background-color: #05b3e1;
 }
 
