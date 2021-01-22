@@ -29,7 +29,8 @@ function App() {
   const [roles, setRoles] = useState<Role[]>([])
   const [did, setDID] = useState<string>('')
   const [errored, setErrored] = useState<Boolean>(false)
-  const [isLoading, setIsLoading] = useState<Boolean>(false)
+  const [loading, setLoading] = useState<Boolean>(false)
+  const [unauthorized, setUnauthorized] = useState<Boolean>(false);
 
   const verifyIdentity = async function () {
     const claim = await iam.createIdentityProof()
@@ -52,8 +53,9 @@ function App() {
   const login = async function (initOptions?: {
     useMetamaskExtension: boolean
   }) {
-    setIsLoading(true)
+    setLoading(true)
     setErrored(false)
+    setUnauthorized(false)
     try {
       const { did } = await iam.initializeConnection(initOptions)
       if (did) {
@@ -61,9 +63,12 @@ function App() {
         await verifyIdentity()
       }
     } catch (err) {
+      if (err?.response?.status === 401) {
+        setUnauthorized(true);
+      }
       setErrored(true)
     }
-    setIsLoading(false)
+    setLoading(false)
   }
 
   const logout = function () {
@@ -76,6 +81,12 @@ function App() {
       <span>Loading... (Please sign messages using your connected wallet)</span>
     </div>
   )
+  
+  const enrolmentButton = config.enrolmentUrl && (
+        <a href={config.enrolmentUrl} className="button">
+          <span>Enrol to test role</span>
+        </a>
+      )
 
   const loginResults = (
     <div>
@@ -101,11 +112,7 @@ function App() {
         </div>
       )}
       <div className="logoutContainer">
-        {config.enrolmentUrl && (
-          <a href={config.enrolmentUrl} className="button">
-            <span>Enrol to test role</span>
-          </a>
-        )}
+        {enrolmentButton}
         <button onClick={logout} className="button">
           <span>Logout</span>
         </button>
@@ -152,9 +159,31 @@ function App() {
     </div>
   )
 
+  const unauthorizedMessage = (
+    <div>
+      <p>
+        Unauthorized login response.
+        <br />
+        Please ensure that you have the necessary role claim.
+      </p>
+      <div className="enrolbuttonContainer">
+        {config.enrolmentUrl && (
+          <p>
+            Use enrolment button to request necessary role.
+          </p>
+        )}
+        {enrolmentButton}
+      </div>
+      {loginOptions}
+    </div>
+  );
+
   const loginJsx = () => {
-    if (isLoading) {
+    if (loading) {
       return loadingMessage
+    }
+    if (unauthorized) {
+      return unauthorizedMessage
     }
     if (errored) {
       return errorMessage
