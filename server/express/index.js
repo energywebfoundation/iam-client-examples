@@ -10,7 +10,7 @@ const app = express();
 
 app.use(passport.initialize(), cors())
 
-app.use(morgan())
+app.use(morgan('combined'))
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
 
