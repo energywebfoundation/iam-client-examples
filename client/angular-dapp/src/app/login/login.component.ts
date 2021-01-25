@@ -20,7 +20,7 @@ export class LoginComponent {
   errored = false;
   unauthorized = false;
   did: string = undefined;
-  enrolmentURL = environment.ENROLMENT_URL;
+  enrolmentURL = environment.ENROLMENT_URL ? `${environment.ENROLMENT_URL}&returnUrl=${encodeURIComponent(window.location.href)}` : '';
   roles: Role[] = [];
 
   async verifyIdentity() {

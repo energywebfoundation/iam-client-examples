@@ -100,7 +100,7 @@ export default Vue.extend({
       unauthorized: false,
       did: "",
       roles: [],
-      enrolmentUrl: config.enrolmentUrl
+      enrolmentUrl: config.enrolmentUrl ? `${config.enrolmentUrl}&returnUrl=${encodeURIComponent(window.location.href)}` : ''
     };
   },
   methods: {
