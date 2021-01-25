@@ -41,6 +41,21 @@
           <a href="https://voltafaucet.energyweb.org/">Volta Faucet</a>.
         </p>
       </div>
+      <div v-if="unauthorized">
+        <p>
+          Unauthorized login response.
+          <br />
+          Please ensure that you have the necessary role claim.
+        </p>
+        <div v-if="enrolmentUrl" class="enrolbuttonContainer">
+          <p>
+            Use enrolment button to request necessary role.
+          </p>
+          <a :href="enrolmentUrl" class="button">
+            <span>Enrol to test role</span>
+          </a>
+        </div>
+      </div>
       <div class="container">
         <button @click="login({ useMetamaskExtension: false })" class="button">
           <img class="walletconnect" src="../assets/wallet-connect-icon.svg" />
@@ -74,6 +89,7 @@ export default Vue.extend({
   data: function(): {
     isLoading: boolean;
     errored: boolean;
+    unauthorized: boolean;
     did?: string;
     roles: Role[];
     enrolmentUrl?: string;
@@ -81,6 +97,7 @@ export default Vue.extend({
     return {
       isLoading: false,
       errored: false,
+      unauthorized: false,
       did: "",
       roles: [],
       enrolmentUrl: config.enrolmentUrl
@@ -110,6 +127,7 @@ export default Vue.extend({
     }) {
       this.isLoading = true;
       this.errored = false;
+      this.unauthorized = false;
       try {
         const { did } = await this.$IAM.initializeConnection({
           useMetamaskExtension
@@ -120,7 +138,11 @@ export default Vue.extend({
         }
       } catch (err) {
         this.did = undefined;
-        this.errored = true;
+        if (err?.response?.status === 401) {
+          this.unauthorized = true;
+        } else {
+          this.errored = true;
+        }
       }
       this.isLoading = false;
     },
@@ -144,6 +166,11 @@ export default Vue.extend({
 .logoutContainer {
   display: flex;
   justify-content: center;
+}
+.enrolbuttonContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 .button {
   background-color: #42b883;
