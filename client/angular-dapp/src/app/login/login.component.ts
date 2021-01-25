@@ -18,6 +18,7 @@ export class LoginComponent {
 
   isLoading = false;
   errored = false;
+  unauthorized = false;
   did: string = undefined;
   enrolmentURL = environment.ENROLMENT_URL;
   roles: Role[] = [];
@@ -45,6 +46,7 @@ export class LoginComponent {
   async login({ useMetamaskExtension }: { useMetamaskExtension: boolean }) {
     this.isLoading = true;
     this.errored = false;
+    this.unauthorized = false;
     try {
       const { did } = await this.iamService.iam.initializeConnection({
         useMetamaskExtension,
@@ -55,7 +57,11 @@ export class LoginComponent {
       }
     } catch (err) {
       this.did = undefined;
-      this.errored = true;
+      if (err?.response?.status === 401) {
+        this.unauthorized = true;
+      } else {
+        this.errored = true;
+      }
     }
     this.isLoading = false;
   }

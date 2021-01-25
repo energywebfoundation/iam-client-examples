@@ -31,6 +31,21 @@
       </div>
     </div>
     <ng-template #noDID>
+      <div *ngIf="unauthorized">
+        <p>
+          Unauthorized login response.
+          <br />
+          Please ensure that you have the necessary role claim.
+        </p>
+        <div *ngIf="enrolmentURL" class="enrolbuttonContainer">
+          <p>
+            Use enrolment button to request necessary role.
+          </p>
+          <a href="{{enrolmentURL}}" class="button">
+            <span>Enrol to test role</span>
+          </a>
+        </div>
+      </div>
       <div *ngIf="errored">
         <p>
           Error occured with login.<br />
