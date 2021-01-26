@@ -83,7 +83,7 @@ function App() {
   )
   
   const enrolmentButton = config.enrolmentUrl && (
-        <a href={config.enrolmentUrl} className="button">
+        <a href={`${config.enrolmentUrl}&returnUrl=${encodeURIComponent(window.location.href)}`} className="button">
           <span>Enrol to test role</span>
         </a>
       )
