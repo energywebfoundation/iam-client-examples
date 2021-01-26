@@ -15,8 +15,8 @@ module.exports.preparePassport = () => {
   passport.use(new LoginStrategy({
     jwtSecret,
     name: LOGIN_STRATEGY,
-    rpcUrl: process.env.RPC_URL ?? 'https://volta-rpc.energyweb.org/',
-    cacheServerUrl: process.env.CACHE_SERVER_URL ?? 'https://volta-iam-cacheserver.energyweb.org/',
+    rpcUrl: process.env.RPC_URL || 'https://volta-rpc.energyweb.org/',
+    cacheServerUrl: process.env.CACHE_SERVER_URL || 'https://volta-iam-cacheserver.energyweb.org/',
     acceptedRoles: process.env.ACCEPTED_ROLES ? process.env.ACCEPTED_ROLES.split(',') : []
   }))
   passport.use(new Strategy(jwtOptions, function (payload, done) {
