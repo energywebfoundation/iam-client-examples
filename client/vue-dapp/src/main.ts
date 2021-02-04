@@ -6,7 +6,7 @@ Vue.config.productionTip = false;
 Vue.use({
   install: () => {
     const cacheClient = new CacheServerClient({
-      url: "https://volta-iam-cacheserver.energyweb.org/"
+      url: "https://volta-identitycache.energyweb.org/"
     });
     Vue.prototype.$IAM = new IAM({
       rpcUrl: "https://volta-rpc.energyweb.org",

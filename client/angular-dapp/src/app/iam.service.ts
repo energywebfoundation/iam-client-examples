@@ -10,7 +10,7 @@ export class IamService {
 
   constructor() {
     const cacheClient = new CacheServerClient({
-      url: "https://volta-iam-cacheserver.energyweb.org/"
+      url: "https://volta-identitycache.energyweb.org/"
     });
 
     this.iam = new IAM({

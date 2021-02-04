@@ -11,7 +11,7 @@ import Spinner from './components/Spinner'
 import SourceCode from './components/SourceCode'
 
 const cacheClient = new CacheServerClient({
-  url: 'https://volta-iam-cacheserver.energyweb.org/',
+  url: 'https://volta-identitycache.energyweb.org/',
 })
 
 const iam = new IAM({
