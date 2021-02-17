@@ -22,7 +22,7 @@
         </div>
       </ng-template>
       <div class="logoutContainer">
-        <a *ngIf="enrolmentURL" href="{{enrolmentURL}}" class="button">
+        <a *ngIf="enrolmentURL" href="{{ enrolmentURL }}" class="button">
           <span>Enrol to test role</span>
         </a>
         <button (click)="logout()" class="button">
@@ -38,10 +38,8 @@
           Please ensure that you have the necessary role claim.
         </p>
         <div *ngIf="enrolmentURL" class="enrolbuttonContainer">
-          <p>
-            Use enrolment button to request necessary role.
-          </p>
-          <a href="{{enrolmentURL}}" class="button">
+          <p>Use enrolment button to request necessary role.</p>
+          <a href="{{ enrolmentURL }}" class="button">
             <span>Enrol to test role</span>
           </a>
         </div>
@@ -57,13 +55,26 @@
         </p>
       </div>
       <div class="container">
-        <button (click)="login({ useMetamaskExtension: false })" class="button">
+        <button
+          (click)="login({ walletProvider: providers.WalletConnect })"
+          class="button"
+        >
           <img class="walletconnect" src="./assets/wallet-connect-icon.svg" />
           <span>Login with Wallet Connect</span>
         </button>
-        <button (click)="login({ useMetamaskExtension: true })" class="button">
+        <button
+          (click)="login({ walletProvider: providers.MetaMask })"
+          class="button"
+        >
           <img class="metamask" src="./assets/metamask-logo.svg" />
           <span>Login with Metamask</span>
+        </button>
+        <button
+          (click)="login({ walletProvider: providers.EwKeyManager })"
+          class="button"
+        >
+          <img class="metamask" src="./assets/key-manager-icon.svg" />
+          <span>Login with EW Key Manager</span>
         </button>
       </div>
     </ng-template>

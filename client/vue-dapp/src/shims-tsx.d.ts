@@ -1,5 +1,5 @@
-import { IAM } from "iam-client-lib";
-import Vue, { VNode } from "vue";
+import { IAM } from 'iam-client-lib'
+import Vue, { VNode } from 'vue'
 
 declare global {
   namespace JSX {
@@ -8,13 +8,13 @@ declare global {
     // tslint:disable no-empty-interface
     interface ElementClass extends Vue {}
     interface IntrinsicElements {
-      [elem: string]: any;
+      [elem: string]: any
     }
   }
 }
 
-declare module "vue/types/vue" {
+declare module 'vue/types/vue' {
   interface Vue {
-    $IAM: IAM;
+    $IAM: IAM
   }
 }

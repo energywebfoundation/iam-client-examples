@@ -1,23 +1,26 @@
 import React, { useState } from 'react'
-import './App.css'
-import './Login.css'
-import { IAM, CacheServerClient } from 'iam-client-lib'
 import axios from 'axios'
-import logo from './assets/logo.svg'
-import metamaskLogo from './assets/metamask-logo.svg'
-import { config } from './config'
-import walletconnectIcon from './assets/wallet-connect-icon.svg'
+import { IAM, CacheServerClient, WalletProvider } from 'iam-client-lib'
+
 import Spinner from './components/Spinner'
 import SourceCode from './components/SourceCode'
 
-const cacheClient = new CacheServerClient({
-  url: 'https://volta-identitycache.energyweb.org/',
-})
+import { config } from './config'
+
+import metamaskLogo from './assets/metamask-logo.svg'
+import logo from './assets/logo.svg'
+import KMLogo from './assets/key-manager-icon.svg'
+import walletconnectIcon from './assets/wallet-connect-icon.svg'
+
+import './App.css'
+import './Login.css'
 
 const iam = new IAM({
   rpcUrl: 'https://volta-rpc.energyweb.org',
   chainId: 73799,
-  cacheClient,
+  cacheClient: new CacheServerClient({
+    url: 'https://volta-identitycache.energyweb.org/',
+  }),
 })
 
 type Role = {
@@ -30,49 +33,43 @@ function App() {
   const [did, setDID] = useState<string>('')
   const [errored, setErrored] = useState<Boolean>(false)
   const [loading, setLoading] = useState<Boolean>(false)
-  const [unauthorized, setUnauthorized] = useState<Boolean>(false);
-
-  const verifyIdentity = async function () {
-    const claim = await iam.createIdentityProof()
-    const { data } = await axios.post<{ token: string }>(
-      `${config.backendUrl}/login`,
-      {
-        claim,
-      }
-    )
-    const requestConfig = {
-      headers: { Authorization: `Bearer ${data.token}` },
-    }
-    const { data: roles } = await axios.get<Role[]>(
-      `${config.backendUrl}/roles`,
-      requestConfig
-    )
-    setRoles(roles)
-  }
+  const [unauthorized, setUnauthorized] = useState<Boolean>(false)
 
   const login = async function (initOptions?: {
-    useMetamaskExtension: boolean
+    walletProvider: WalletProvider
   }) {
     setLoading(true)
     setErrored(false)
     setUnauthorized(false)
     try {
-      const { did } = await iam.initializeConnection(initOptions)
+      const { identityToken, did } = await iam.initializeConnection(initOptions)
+
       if (did) {
         setDID(did)
-        await verifyIdentity()
       }
+      if (identityToken) {
+        await axios.post<{ token: string }>(`${config.backendUrl}/login`, {
+          identityToken,
+        })
+      }
+
+      const { data: roles } = await axios.get<Role[]>(
+        `${config.backendUrl}/roles`
+      )
+
+      setRoles(roles)
     } catch (err) {
       if (err?.response?.status === 401) {
-        setUnauthorized(true);
+        setUnauthorized(true)
       }
       setErrored(true)
     }
     setLoading(false)
   }
 
-  const logout = function () {
+  const logout = async function () {
     setDID('')
+    await iam.closeConnection()
   }
 
   const loadingMessage = (
@@ -81,12 +78,17 @@ function App() {
       <span>Loading... (Please sign messages using your connected wallet)</span>
     </div>
   )
-  
+
   const enrolmentButton = config.enrolmentUrl && (
-        <a href={`${config.enrolmentUrl}&returnUrl=${encodeURIComponent(window.location.href)}`} className="button">
-          <span>Enrol to test role</span>
-        </a>
-      )
+    <a
+      href={`${config.enrolmentUrl}&returnUrl=${encodeURIComponent(
+        window.location.href
+      )}`}
+      className="button"
+    >
+      <span>Enrol to test role</span>
+    </a>
+  )
 
   const loginResults = (
     <div>
@@ -124,7 +126,9 @@ function App() {
     <div className="container">
       <button
         className="button"
-        onClick={async () => await login({ useMetamaskExtension: false })}
+        onClick={async () =>
+          await login({ walletProvider: WalletProvider.WalletConnect })
+        }
       >
         <img
           alt="walletconnect logo"
@@ -135,10 +139,21 @@ function App() {
       </button>
       <button
         className="button"
-        onClick={async () => await login({ useMetamaskExtension: true })}
+        onClick={async () =>
+          await login({ walletProvider: WalletProvider.MetaMask })
+        }
       >
         <img alt="metamask logo" className="metamask" src={metamaskLogo} />
         <span>Login with Metamask</span>
+      </button>
+      <button
+        className="button"
+        onClick={async () =>
+          await login({ walletProvider: WalletProvider.EwKeyManager })
+        }
+      >
+        <img alt="metamask logo" className="metamask" src={KMLogo} />
+        <span>Login with EW Key Manager</span>
       </button>
     </div>
   )
@@ -146,7 +161,7 @@ function App() {
   const errorMessage = (
     <div>
       <p>
-        Error occured with login.
+        Error occurred with login.
         <br />
         If you rejected the signing requests, please try again and accept.
         <br />
@@ -168,15 +183,13 @@ function App() {
       </p>
       <div className="enrolbuttonContainer">
         {config.enrolmentUrl && (
-          <p>
-            Use enrolment button to request necessary role.
-          </p>
+          <p>Use enrolment button to request necessary role.</p>
         )}
         {enrolmentButton}
       </div>
       {loginOptions}
     </div>
-  );
+  )
 
   const loginJsx = () => {
     if (loading) {
