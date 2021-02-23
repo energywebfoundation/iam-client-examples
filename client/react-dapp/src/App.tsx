@@ -48,13 +48,18 @@ function App() {
         setDID(did)
       }
       if (identityToken) {
-        await axios.post<{ token: string }>(`${config.backendUrl}/login`, {
-          identityToken,
-        })
+        await axios.post<{ token: string }>(
+          `${config.backendUrl}/login`,
+          {
+            identityToken,
+          },
+          { withCredentials: true }
+        )
       }
 
       const { data: roles } = await axios.get<Role[]>(
-        `${config.backendUrl}/roles`
+        `${config.backendUrl}/roles`,
+        { withCredentials: true }
       )
 
       setRoles(roles)

@@ -46,13 +46,18 @@ export class LoginComponent {
       }
 
       if (identityToken) {
-        await axios.post(`${environment.BACKEND_URL}/login`, {
-          identityToken,
-        });
+        await axios.post(
+          `${environment.BACKEND_URL}/login`,
+          {
+            identityToken,
+          },
+          { withCredentials: true }
+        );
       }
 
       const { data: roles } = await axios.get<Role[]>(
-        `${environment.BACKEND_URL}/roles`
+        `${environment.BACKEND_URL}/roles`,
+        { withCredentials: true }
       );
       this.roles = roles;
     } catch (err) {

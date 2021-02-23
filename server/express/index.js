@@ -5,6 +5,7 @@ const bodyParser = require('body-parser')
 const cookieParser = require('cookie-parser')
 const { preparePassport } = require('./passport')
 const useragent = require('useragent')
+const { getCookiesOptionBasedOnUserAgent } = require('./cookies')
 
 const { passport, LOGIN_STRATEGY } = preparePassport()
 
@@ -18,23 +19,19 @@ app.use(bodyParser.json())
 app.use(cookieParser())
 
 app.post('/login', passport.authenticate(LOGIN_STRATEGY), (req, res) => {
-  const cookiesOptions = {
-    httpOnly: true,
-    // sameSite: 'none',
-    // secure: true,
-  }
-  const { family, major } = useragent.parse(req.headers['user-agent']) || {};
 
-  if (family === 'Chrome' && +major >= 51 && +major <= 66) {
-    delete cookiesOptions.sameSite;
-    delete cookiesOptions.secure;
-  }
+  const isProduction = process.env.NODE_ENV === 'production'
+
+  const cookiesOptions = isProduction
+    ? getCookiesOptionBasedOnUserAgent(req.headers['user-agent'] | "")
+    : { httpOnly: true }
 
   res.cookie('auth', req.user, cookiesOptions);
 
   return res.send({ token: req.user });
 
 })
+
 app.get('/roles', passport.authenticate('jwt'), (req, res) => {
   res.json(req.user.verifiedRoles)
 })

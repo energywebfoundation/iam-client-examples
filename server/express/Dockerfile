@@ -3,7 +3,7 @@ ARG PORT=3333
 FROM node:14-alpine
 
 # Set node environment to production
-ENV NODE_ENV production
+ENV NODE_ENV=production
 
 WORKDIR /app
 

@@ -3,25 +3,30 @@ import { LoginGuard } from './auth/auth.guard';
 import { CookieOptions, Request, Response } from 'express';
 import { JwtAuthGuard } from './auth/jwt.guard';
 import * as useragent from 'useragent';
+import { CookiesServices } from './auth/cookies.service';
+import { ConfigService } from '@nestjs/config';
 
 @Controller()
 export class AppController {
-  constructor() {}
+  constructor(
+    private cookiesService: CookiesServices,
+    private configService: ConfigService,
+  ) {}
 
   @UseGuards(LoginGuard)
   @Post('login')
   async login(@Req() req: Request, @Res() res: Response) {
-    const cookiesOptions: CookieOptions = {
-      httpOnly: true,
-      // sameSite: 'none',
-      // secure: true,
-    };
-    const { family, major } = useragent.parse(req.headers['user-agent']) || {};
-    if (family === 'Chrome' && +major >= 51 && +major <= 66) {
-      delete cookiesOptions.sameSite;
-      delete cookiesOptions.secure;
-    }
+    const isProduction =
+      this.configService.get<string>('NODE_ENV)') === 'production';
+
+    const cookiesOptions = isProduction
+      ? this.cookiesService.getCookiesOptionBasedOnUserAgent(
+          req.headers['user-agent'],
+        )
+      : { httpOnly: true };
+
     res.cookie('auth', req.user, cookiesOptions);
+
     return res.send({ token: req.user });
   }
 
