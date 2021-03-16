@@ -4,7 +4,6 @@ const morgan = require('morgan')
 const bodyParser = require('body-parser')
 const cookieParser = require('cookie-parser')
 const { preparePassport } = require('./passport')
-const useragent = require('useragent')
 const { getCookiesOptionBasedOnUserAgent } = require('./cookies')
 
 const { passport, LOGIN_STRATEGY } = preparePassport()
