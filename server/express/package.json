@@ -11,10 +11,12 @@
   "license": "ISC",
   "dependencies": {
     "body-parser": "^1.19.0",
+    "cookie-parser": "^1.4.5",
     "express": "^4.17.1",
     "morgan": "^1.10.0",
     "passport": "^0.4.1",
-    "passport-did-auth": "^1.0.0-alpha.2",
-    "passport-jwt": "^4.0.0"
+    "passport-did-auth": "^1.0.0-alpha.7",
+    "passport-jwt": "^4.0.0",
+    "useragent": "^2.3.0"
   }
 }

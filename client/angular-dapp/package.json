@@ -7,7 +7,8 @@
     "build": "ng build --base-href ./",
     "test": "ng test",
     "lint": "ng lint",
-    "e2e": "ng e2e"
+    "e2e": "ng e2e",
+    "postinstall": "node patch.js"
   },
   "private": true,
   "dependencies": {
@@ -20,7 +21,7 @@
     "@angular/platform-browser-dynamic": "~10.1.1",
     "@angular/router": "~10.1.1",
     "axios": "^0.21.1",
-    "iam-client-lib": "^1.0.4",
+    "iam-client-lib": "^2.0.0-alpha.22",
     "rxjs": "~6.6.0",
     "tslib": "^2.0.0",
     "zone.js": "~0.10.2"

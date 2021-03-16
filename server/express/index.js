@@ -2,21 +2,36 @@ const express = require('express')
 const cors = require('cors')
 const morgan = require('morgan')
 const bodyParser = require('body-parser')
+const cookieParser = require('cookie-parser')
 const { preparePassport } = require('./passport')
+const useragent = require('useragent')
+const { getCookiesOptionBasedOnUserAgent } = require('./cookies')
 
 const { passport, LOGIN_STRATEGY } = preparePassport()
 
 const app = express();
 
-app.use(passport.initialize(), cors())
+app.use(passport.initialize(), cors({ origin: true, credentials: true }))
 
 app.use(morgan('combined'))
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
+app.use(cookieParser())
 
 app.post('/login', passport.authenticate(LOGIN_STRATEGY), (req, res) => {
-  res.json({ token: req.user });
+
+  const isProduction = process.env.NODE_ENV === 'production'
+
+  const cookiesOptions = isProduction
+    ? getCookiesOptionBasedOnUserAgent(req.headers['user-agent'] | "")
+    : { httpOnly: true }
+
+  res.cookie('auth', req.user, cookiesOptions);
+
+  return res.send({ token: req.user });
+
 })
+
 app.get('/roles', passport.authenticate('jwt'), (req, res) => {
   res.json(req.user.verifiedRoles)
 })

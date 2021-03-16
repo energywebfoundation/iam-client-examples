@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import axios from 'axios';
 import { IamService } from '../iam.service';
 import { environment } from '../../environments/environment';
+import { WalletProvider } from 'iam-client-lib';
 
 type Role = {
   name: string;
@@ -16,46 +17,51 @@ type Role = {
 export class LoginComponent {
   constructor(private readonly iamService: IamService) {}
 
+  providers = WalletProvider;
   isLoading = false;
   errored = false;
   unauthorized = false;
   did: string = undefined;
-  enrolmentURL = environment.ENROLMENT_URL ? `${environment.ENROLMENT_URL}&returnUrl=${encodeURIComponent(window.location.href)}` : '';
+  enrolmentURL = environment.ENROLMENT_URL
+    ? `${environment.ENROLMENT_URL}&returnUrl=${encodeURIComponent(
+        window.location.href
+      )}`
+    : '';
   roles: Role[] = [];
 
-  async verifyIdentity() {
-    const claim = await this.iamService.iam.createIdentityProof();
-    const {
-      data: { token },
-    } = await axios.post<{ token: string }>(
-      `${environment.BACKEND_URL}/login`,
-      {
-        claim,
-      }
-    );
-    const config = {
-      headers: { Authorization: `Bearer ${token}` },
-    };
-    const { data: roles } = await axios.get<Role[]>(
-      `${environment.BACKEND_URL}/roles`,
-      config
-    );
-    this.roles = roles;
-  }
-
-  async login({ useMetamaskExtension }: { useMetamaskExtension: boolean }) {
+  async login({ walletProvider }: { walletProvider: WalletProvider }) {
     this.isLoading = true;
     this.errored = false;
     this.unauthorized = false;
     try {
-      const { did } = await this.iamService.iam.initializeConnection({
-        useMetamaskExtension,
+      const {
+        identityToken,
+        did,
+      } = await this.iamService.iam.initializeConnection({
+        walletProvider,
       });
+
       if (did) {
         this.did = did;
-        await this.verifyIdentity();
       }
+
+      if (identityToken) {
+        await axios.post(
+          `${environment.BACKEND_URL}/login`,
+          {
+            identityToken,
+          },
+          { withCredentials: true }
+        );
+      }
+
+      const { data: roles } = await axios.get<Role[]>(
+        `${environment.BACKEND_URL}/roles`,
+        { withCredentials: true }
+      );
+      this.roles = roles;
     } catch (err) {
+      console.log(err);
       this.did = undefined;
       if (err?.response?.status === 401) {
         this.unauthorized = true;
@@ -66,7 +72,8 @@ export class LoginComponent {
     this.isLoading = false;
   }
 
-  logout() {
+  async logout() {
     this.did = '';
+    await this.iamService.iam.closeConnection();
   }
 }

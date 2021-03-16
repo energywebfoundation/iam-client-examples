@@ -57,13 +57,17 @@
         </div>
       </div>
       <div class="container">
-        <button @click="login({ useMetamaskExtension: false })" class="button">
+        <button @click="login({ walletProvider: 'WalletConnect' })" class="button">
           <img class="walletconnect" src="../assets/wallet-connect-icon.svg" />
           <span>Login with Wallet Connect</span>
         </button>
-        <button @click="login({ useMetamaskExtension: true })" class="button">
+        <button @click="login({ walletProvider: 'MetaMask' })" class="button">
           <img class="metamask" src="../assets/metamask-logo.svg" />
           <span>Login with Metamask</span>
+        </button>
+        <button @click="login({ walletProvider: 'EwKeyManager' })" class="button">
+          <img class="metamask" src="../assets/key-manager-icon.svg" />
+          <span>Login with EW Key Manager</span>
         </button>
       </div>
     </div>
@@ -74,7 +78,8 @@
 import Vue from "vue";
 import Spinner from "./Spinner.vue";
 import axios from "axios";
-import { config } from '../config'
+import { config } from "../config";
+import { WalletProvider } from "iam-client-lib";
 
 type Role = {
   name: string;
@@ -100,43 +105,42 @@ export default Vue.extend({
       unauthorized: false,
       did: "",
       roles: [],
-      enrolmentUrl: config.enrolmentUrl ? `${config.enrolmentUrl}&returnUrl=${encodeURIComponent(window.location.href)}` : ''
+      enrolmentUrl: config.enrolmentUrl
+        ? `${config.enrolmentUrl}&returnUrl=${encodeURIComponent(
+            window.location.href
+          )}`
+        : ""
     };
   },
   methods: {
-    verifyIdentity: async function() {
-      const claim = await this.$IAM.createIdentityProof();
-      const {
-        data: { token }
-      } = await axios.post<{ token: string }>(`${config.backendUrl}/login`, {
-        claim
-      });
-      const options = {
-        headers: { Authorization: `Bearer ${token}` }
-      };
-      const { data: roles } = await axios.get<Role[]>(
-        `${config.backendUrl}/roles`,
-        options
-      );
-      this.roles = roles;
-    },
     login: async function({
-      useMetamaskExtension
+      walletProvider
     }: {
-      useMetamaskExtension: boolean;
+      walletProvider: WalletProvider;
     }) {
       this.isLoading = true;
       this.errored = false;
       this.unauthorized = false;
       try {
-        const { did } = await this.$IAM.initializeConnection({
-          useMetamaskExtension
+        const { did, identityToken } = await this.$IAM.initializeConnection({
+          walletProvider
         });
         if (did) {
           this.did = did;
-          await this.verifyIdentity();
         }
+
+        if (identityToken) {
+          await axios.post(`${config.backendUrl}/login`, { identityToken }, { withCredentials: true });
+        }
+
+        const { data: roles } = await axios.get<Role[]>(
+          `${config.backendUrl}/roles`, { withCredentials: true }
+        );
+
+        this.roles = roles;
+        this.isLoading = false;
       } catch (err) {
+        console.log(err);
         this.did = undefined;
         if (err?.response?.status === 401) {
           this.unauthorized = true;
@@ -146,8 +150,9 @@ export default Vue.extend({
       }
       this.isLoading = false;
     },
-    logout: function() {
+    logout: async function() {
       this.did = "";
+      await this.$IAM.closeConnection()
     }
   }
 });

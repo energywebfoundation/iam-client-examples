@@ -11,7 +11,7 @@
   "dependencies": {
     "axios": "^0.21.1",
     "core-js": "^3.6.5",
-    "iam-client-lib": "^1.0.4",
+    "iam-client-lib": "^2.0.0-alpha.22",
     "register-service-worker": "^1.7.1",
     "vue": "^2.6.11"
   },
