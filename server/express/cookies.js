@@ -1,4 +1,6 @@
-module.exports = getCookiesOptionBasedOnUserAgent = (userAgent) => {
+const useragent = require('useragent')
+
+exports.getCookiesOptionBasedOnUserAgent = (userAgent) => {
   const cookiesOptions = {
     httpOnly: true,
     sameSite: 'none',
