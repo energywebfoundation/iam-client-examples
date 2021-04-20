@@ -153,6 +153,7 @@ export default Vue.extend({
     logout: async function() {
       this.did = "";
       await this.$IAM.closeConnection()
+      window.location.reload();
     }
   }
 });

@@ -75,6 +75,7 @@ function App() {
   const logout = async function () {
     setDID('')
     await iam.closeConnection()
+    window.location.reload();
   }
 
   const loadingMessage = (
