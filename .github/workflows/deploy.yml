@@ -28,14 +28,14 @@ jobs:
         with:
           node-version: '14'
           strategy:
-          matrix:
-            APPS: [angular-dapp, react-dapp, vue-dapp]
+            matrix:
+              DAPPS: [angular-dapp, react-dapp, vue-dapp]
           env:
             APP_DIR: $HOME/work/iam-client-examples/iam-client-examples/client
 
       - name: Build dapp
         run: |
-          cd ${{ APP_DIR }}/${{ matrix.APPS }}
+          cd ${{ APP_DIR }}/${{ matrix.DAPPS }}
           npm ci
           npm run build
 
@@ -54,5 +54,5 @@ jobs:
         if: github.ref == 'refs/heads/DOI-887_*'
         run: |
           cd ${{ APP_DIR }}
-          rsync -e "ssh -o StrictHostKeyChecking=no" -rv dist $SERVER_USER@$SERVER_HOST:~/client-lib-examples/${{ matrix.APPS }}
+          rsync -e "ssh -o StrictHostKeyChecking=no" -rv dist $SERVER_USER@$SERVER_HOST:~/client-lib-examples/${{ matrix.DAPPS }}
 
