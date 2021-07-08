@@ -30,8 +30,8 @@ jobs:
           strategy:
             matrix:
               DAPPS: [angular-dapp, react-dapp, vue-dapp]
-          env:
-            APP_DIR: $HOME/work/iam-client-examples/iam-client-examples/client
+            env:
+              APP_DIR: $HOME/work/iam-client-examples/iam-client-examples/client
 
       - name: Build dapp
         run: |
