@@ -3,8 +3,6 @@ name: Deploy
 on:
   push:
     branches: [ 'DOI-887_*' ]
-  pull_request:
-    branches: [ 'master' ]
 
 jobs:
   cancel-previous:
@@ -36,7 +34,7 @@ jobs:
 
       - name: Build dapp
         run: |
-          cd ${{ APP_DIR }}/${{ matrix.DAPPS }}
+          cd ${{ env.APP_DIR }}/${{ matrix.DAPPS }}
           npm ci
           npm run build
 
@@ -56,6 +54,6 @@ jobs:
       - name: Deploy on master branch
         if: github.ref == 'refs/heads/DOI-887_*'
         run: |
-          cd ${{ APP_DIR }}
+          cd ${{ env.APP_DIR }}
           rsync -e "ssh -o StrictHostKeyChecking=no" -rv dist ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }}:~/client-lib-examples/${{ matrix.DAPPS }}
 
