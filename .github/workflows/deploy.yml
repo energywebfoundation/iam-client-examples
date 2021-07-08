@@ -1,0 +1,58 @@
+name: Deploy
+
+on:
+  push:
+    branches: [ 'DOI-887_*' ]
+  pull_request:
+    branches: [ 'master' ]
+
+jobs:
+  cancel-previous:
+    name: 'Cancel Previous Runs'
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - uses: styfle/cancel-workflow-action@0.8.0
+        with:
+          access_token: ${{ github.token }}
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: cancel-previous
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v2-beta
+        with:
+          node-version: '14'
+          strategy:
+          matrix:
+            APPS: [angular-dapp, react-dapp, vue-dapp]
+          env:
+            APP_DIR: $HOME/work/iam-client-examples/iam-client-examples/client
+
+      - name: Build dapp
+        run: |
+          cd ${{ APP_DIR }}/${{ matrix.APPS }}
+          npm ci
+          npm run build
+
+      - name: Configuration for deployment
+        run: |
+          openssl aes-256-cbc -K $encrypted_db2095f63ba3_key -iv $encrypted_db2095f63ba3_iv -in ../../deploy_rsa.enc -out deploy_rsa -d
+          eval "$(ssh-agent -s)"
+          chmod 600 deploy_rsa
+          ssh-add deploy_rsa
+
+      - name: Deploy on develop branch
+        if: github.ref == 'refs/heads/develop'
+        run: npx semantic-release
+
+      - name: Deploy on master branch
+        if: github.ref == 'refs/heads/DOI-887_*'
+        run: |
+          cd ${{ APP_DIR }}
+          rsync -e "ssh -o StrictHostKeyChecking=no" -rv dist $SERVER_USER@$SERVER_HOST:~/client-lib-examples/${{ matrix.APPS }}
+
