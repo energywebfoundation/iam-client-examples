@@ -19,6 +19,9 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     needs: cancel-previous
+    strategy:
+      matrix:
+        DAPPS: [angular-dapp, react-dapp, vue-dapp]
 
     steps:
       - uses: actions/checkout@v2
@@ -29,17 +32,13 @@ jobs:
         with:
           node-version: '14'
 
-    strategy:
-      matrix:
-        DAPPS: [angular-dapp, react-dapp, vue-dapp]
-      env:
-        APP_DIR: $HOME/work/iam-client-examples/iam-client-examples/client
-
       - name: Build dapp
         run: |
           cd ${{ APP_DIR }}/${{ matrix.DAPPS }}
           npm ci
           npm run build
+        env:
+          APP_DIR: $HOME/work/iam-client-examples/iam-client-examples/client
 
 
       - name: Configuration for deployment
