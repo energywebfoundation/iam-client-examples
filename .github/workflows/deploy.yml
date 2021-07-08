@@ -19,6 +19,8 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     needs: cancel-previous
+    env:
+      APP_DIR: $HOME/work/iam-client-examples/iam-client-examples/client
     strategy:
       matrix:
         DAPPS: [angular-dapp, react-dapp, vue-dapp]
@@ -37,13 +39,12 @@ jobs:
           cd ${{ APP_DIR }}/${{ matrix.DAPPS }}
           npm ci
           npm run build
-        env:
-          APP_DIR: $HOME/work/iam-client-examples/iam-client-examples/client
+
 
 
       - name: Configuration for deployment
         run: |
-          openssl aes-256-cbc -K $encrypted_db2095f63ba3_key -iv $encrypted_db2095f63ba3_iv -in ../../deploy_rsa.enc -out deploy_rsa -d
+          openssl aes-256-cbc -K ${{ secrets.encrypted_db2095f63ba3_key}} -iv ${{ secrets.encrypted_db2095f63ba3_iv }} -in ../../deploy_rsa.enc -out deploy_rsa -d
           eval "$(ssh-agent -s)"
           chmod 600 deploy_rsa
           ssh-add deploy_rsa
@@ -56,5 +57,5 @@ jobs:
         if: github.ref == 'refs/heads/DOI-887_*'
         run: |
           cd ${{ APP_DIR }}
-          rsync -e "ssh -o StrictHostKeyChecking=no" -rv dist $SERVER_USER@$SERVER_HOST:~/client-lib-examples/${{ matrix.DAPPS }}
+          rsync -e "ssh -o StrictHostKeyChecking=no" -rv dist ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }}:~/client-lib-examples/${{ matrix.DAPPS }}
 
