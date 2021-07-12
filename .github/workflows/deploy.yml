@@ -38,14 +38,12 @@ jobs:
           npm ci
           npm run build
 
-
-
-      - name: Configuration for deployment
-        run: |
-          openssl aes-256-cbc -K ${{ secrets.encrypted_db2095f63ba3_key}} -iv ${{ secrets.encrypted_db2095f63ba3_iv }} -in ../../deploy_rsa.enc -out deploy_rsa -d
-          eval "$(ssh-agent -s)"
-          chmod 600 deploy_rsa
-          ssh-add deploy_rsa
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-2
 
       - name: Deploy on develop branch
         if: github.ref == 'refs/heads/develop'
@@ -55,5 +53,5 @@ jobs:
         if: github.ref == 'refs/heads/DOI-887_*'
         run: |
           cd ${{ env.APP_DIR }}
-          rsync -e "ssh -o StrictHostKeyChecking=no" -rv dist ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }}:~/client-lib-examples/${{ matrix.DAPPS }}
+          rsync -e "ssh -o StrictHostKeyChecking=no" -rv dist ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }}:${{ env.APP_DIR }}/${{ matrix.DAPPS }}
 
