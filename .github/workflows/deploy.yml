@@ -2,9 +2,9 @@ name: Deploy
 
 on:
   push:
-    branches: [ 'develop', 'master' ]
+    branches: [ 'master' ]
   pull_request:
-    branches: [ 'development' ]
+    branches: [ 'master' ]
 
 jobs:
   cancel-previous:
@@ -46,10 +46,6 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-2
-
-      - name: Deploy on develop branch
-        if: github.ref == 'refs/heads/develop'
-        run: npx semantic-release
 
       - name: Deploy on master branch
         if: github.ref == 'refs/heads/master'
