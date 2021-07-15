@@ -16,33 +16,43 @@ type Role = {
 })
 export class LoginComponent {
   constructor(private readonly iamService: IamService) {}
-
   providers = WalletProvider;
   isLoading = false;
   errored = false;
   unauthorized = false;
-  did: string = undefined;
+  did: string = localStorage.getItem('did');
   enrolmentURL = environment.ENROLMENT_URL
     ? `${environment.ENROLMENT_URL}&returnUrl=${encodeURIComponent(
         window.location.href
       )}`
     : '';
-  roles: Role[] = [];
+  roles: Role[] = JSON.parse(localStorage.getItem('roles')) || [];
+
+  ngOnInit() {
+    const getRoles = async () => {
+      const res = await axios.get(`${environment.BACKEND_URL}/roles`, {
+        withCredentials: true,
+      });
+      if (res.status !== 200) {
+        this.logout();
+      }
+    };
+    getRoles();
+  }
 
   async login({ walletProvider }: { walletProvider: WalletProvider }) {
     this.isLoading = true;
     this.errored = false;
     this.unauthorized = false;
     try {
-      const {
-        identityToken,
-        did,
-      } = await this.iamService.iam.initializeConnection({
-        walletProvider,
-      });
+      const { identityToken, did } =
+        await this.iamService.iam.initializeConnection({
+          walletProvider,
+        });
 
       if (did) {
-        this.did = did;
+        localStorage.setItem('did', did);
+        this.did = localStorage.getItem('did');
       }
 
       if (identityToken) {
@@ -59,7 +69,8 @@ export class LoginComponent {
         `${environment.BACKEND_URL}/roles`,
         { withCredentials: true }
       );
-      this.roles = roles;
+      localStorage.setItem('roles', JSON.stringify(roles));
+      this.roles = JSON.parse(localStorage.getItem('roles'));
     } catch (err) {
       console.log(err);
       this.did = undefined;
@@ -73,7 +84,8 @@ export class LoginComponent {
   }
 
   async logout() {
-    this.did = '';
     await this.iamService.iam.closeConnection();
+    localStorage.clear();
+    window.location.reload();
   }
 }
