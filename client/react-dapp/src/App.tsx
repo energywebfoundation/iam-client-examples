@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import {
   IAM,
@@ -34,11 +34,28 @@ type Role = {
 };
 
 function App() {
-  const [roles, setRoles] = useState<Role[]>([]);
-  const [did, setDID] = useState<string>("");
+  let roles;
+  const userRoles = localStorage.getItem("roles");
+  if (userRoles) {
+    roles = JSON.parse(userRoles) as Role[];
+  }
+  const did = localStorage.getItem("did");
   const [errored, setErrored] = useState<Boolean>(false);
   const [loading, setLoading] = useState<Boolean>(false);
   const [unauthorized, setUnauthorized] = useState<Boolean>(false);
+
+  useEffect(() => {
+    const getRoles = async () => {
+      const res = await axios.get(`${config.backendUrl}/roles`, {
+        withCredentials: true,
+      });
+      if (res.status !== 200) {
+        logout();
+      }
+    };
+
+    getRoles();
+  });
 
   const login = async function (initOptions?: {
     walletProvider: WalletProvider;
@@ -52,7 +69,7 @@ function App() {
       );
 
       if (did) {
-        setDID(did);
+        localStorage.setItem("did", did);
       }
       if (identityToken) {
         await axios.post<{ token: string }>(
@@ -68,8 +85,7 @@ function App() {
         `${config.backendUrl}/roles`,
         { withCredentials: true }
       );
-
-      setRoles(roles);
+      localStorage.setItem("roles", JSON.stringify(roles));
     } catch (err) {
       if (err?.response?.status === 401) {
         setUnauthorized(true);
@@ -80,8 +96,9 @@ function App() {
   };
 
   const logout = async function () {
-    setDID("");
     await iam.closeConnection();
+    localStorage.clear();
+    window.location.reload();
   };
 
   const loadingMessage = (
