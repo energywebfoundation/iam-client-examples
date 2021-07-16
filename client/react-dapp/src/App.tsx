@@ -34,12 +34,9 @@ type Role = {
 };
 
 function App() {
-  let roles;
   const userRoles = localStorage.getItem("roles");
-  if (userRoles) {
-    roles = JSON.parse(userRoles) as Role[];
-  }
   const did = localStorage.getItem("did");
+  const roles = userRoles ? (JSON.parse(userRoles) as Role[]) : [];
   const [errored, setErrored] = useState<Boolean>(false);
   const [loading, setLoading] = useState<Boolean>(false);
   const [unauthorized, setUnauthorized] = useState<Boolean>(false);

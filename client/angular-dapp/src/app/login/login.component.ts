@@ -51,8 +51,8 @@ export class LoginComponent {
         });
 
       if (did) {
+        this.did = did;
         localStorage.setItem('did', did);
-        this.did = localStorage.getItem('did');
       }
 
       if (identityToken) {
@@ -69,8 +69,8 @@ export class LoginComponent {
         `${environment.BACKEND_URL}/roles`,
         { withCredentials: true }
       );
+      this.roles = roles;
       localStorage.setItem('roles', JSON.stringify(roles));
-      this.roles = JSON.parse(localStorage.getItem('roles'));
     } catch (err) {
       console.log(err);
       this.did = undefined;
