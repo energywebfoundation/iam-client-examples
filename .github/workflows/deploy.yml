@@ -38,11 +38,18 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-2
 
-      - name: Deploy & Build server component
-        # if: github.ref == 'refs/heads/master'
-        run: |
-          ssh -i ${{ secrets.SSH_KEY }} ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }}
-          rsync -e "ssh -o StrictHostKeyChecking=no" -rv dist ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }}:$${{ env.SERVER_DIR }}/express
-          sh ./deploy.sh
-          npm install
-          npm run
+      # - name: Deploy & Build server component
+      #   if: github.ref == 'refs/heads/master'
+      #   run: |
+      #     rsync -e "ssh -o StrictHostKeyChecking=no" -rv dist ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }}:$${{ env.SERVER_DIR }}/express
+      #     sh ./deploy.sh
+      #     npm install
+      #     npm run
+      - name: Deploy to Server
+        uses: easingthemes/ssh-deploy@main
+        env:
+            SSH_PRIVATE_KEY: ${{ secrets.SERVER_SSH_KEY }}
+            SOURCE: ${{ env.SERVER_DIR }}
+            REMOTE_HOST: ${{ secrets.SERVER_HOST }}
+            REMOTE_USER: ${{ secrets.SERVER_USER }}
+            TARGET: ${{ env.SERVER_DIR }}/express

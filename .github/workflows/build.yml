@@ -47,8 +47,16 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-2
 
-      - name: Deploy on master branch
-        # if: github.ref == 'refs/heads/master'
-        run: |
-          ssh -i ${{ secrets.SSH_KEY }} ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }}
-          rsync -e "ssh -o StrictHostKeyChecking=no" -rv dist ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }}:${{ env.APP_DIR }}/${{ matrix.DAPPS }}
+      # - name: Deploy on master branch
+      #   if: github.ref == 'refs/heads/master'
+      #   run: |
+      #     rsync -e "ssh -o StrictHostKeyChecking=no" -rv dist ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }}:${{ env.APP_DIR }}/${{ matrix.DAPPS }}
+
+      - name: Deploy to Server
+        uses: easingthemes/ssh-deploy@main
+        env:
+            SSH_PRIVATE_KEY: ${{ secrets.SERVER_SSH_KEY }}
+            SOURCE: ${{ env.APP_DIR }}
+            REMOTE_HOST: ${{ secrets.SERVER_HOST }}
+            REMOTE_USER: ${{ secrets.SERVER_USET }}
+            TARGET: ${{ env.APP_DIR }}/${{ matrix.DAPPS }}
