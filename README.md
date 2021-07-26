@@ -1,4 +1,8 @@
 <p align="center">
+  <img src="https://github.com/energywebfoundation/iam-client-examples/actions/workflows/build.yml/badge.svg" />
+</p>
+
+<p align="center">
   <img src="https://github.com/energywebfoundation/iam-client-examples/actions/workflows/deploy.yml/badge.svg" />
 </p>
 
