@@ -1,4 +1,4 @@
-name: Build
+name: Build Client
 
 on:
   push:
@@ -39,3 +39,16 @@ jobs:
           cd ${{ env.APP_DIR }}/${{ matrix.DAPPS }}
           npm ci
           npm run build
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-2
+
+      - name: Deploy on master branch
+        if: github.ref == 'refs/heads/master'
+        run: |
+          cd ${{ env.APP_DIR }}
+          rsync -e "ssh -o StrictHostKeyChecking=no" -rv dist ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }}:${{ env.APP_DIR }}/${{ matrix.DAPPS }}
