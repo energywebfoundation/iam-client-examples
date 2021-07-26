@@ -49,4 +49,6 @@ jobs:
 
       - name: Deploy on master branch
         # if: github.ref == 'refs/heads/master'
-        run: rsync -e "ssh -o StrictHostKeyChecking=no" -rv dist ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }}:${{ env.APP_DIR }}/${{ matrix.DAPPS }}
+        run: |
+          ssh -i ${{ secrets.SSH_KYE }} ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }}
+          rsync -e "ssh -o StrictHostKeyChecking=no" -rv dist ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }}:${{ env.APP_DIR }}/${{ matrix.DAPPS }}
