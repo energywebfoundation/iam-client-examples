@@ -45,11 +45,17 @@ jobs:
       #     sh ./deploy.sh
       #     npm install
       #     npm run
+
       - name: Deploy to Server
         uses: easingthemes/ssh-deploy@main
+        # if: github.ref == 'refs/heads/master'
         env:
           SSH_PRIVATE_KEY: ${{ secrets.SSH_KEY }}
           SOURCE: "./"
           REMOTE_HOST: ${{ secrets.SERVER_HOST }}
           REMOTE_USER: ${{ secrets.SERVER_USER }}
           TARGET: "/home/ubuntu/iam-client-examples/server/express"
+          script: |
+            sh ./deploy.sh
+            npm install
+            npm run
