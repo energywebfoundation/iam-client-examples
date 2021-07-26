@@ -47,9 +47,9 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-2
 
-      - name: Deploy to Server
+      - name: Deploy client dApp
         uses: easingthemes/ssh-deploy@main
-        # if: github.ref == 'refs/heads/master'
+        if: github.ref == 'refs/heads/master'
         env:
           SSH_PRIVATE_KEY: ${{ secrets.SSH_KEY }}
           SOURCE: "./"

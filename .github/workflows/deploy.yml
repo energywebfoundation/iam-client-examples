@@ -46,7 +46,7 @@ jobs:
       #     npm install
       #     npm run
 
-      - name: SSH to AWS
+      - name: SSH to AWS and Deploy Server
         uses: easingthemes/ssh-deploy@main
         # if: github.ref == 'refs/heads/master'
         env:
@@ -55,8 +55,9 @@ jobs:
           REMOTE_HOST: ${{ secrets.SERVER_HOST }}
           REMOTE_USER: ${{ secrets.SERVER_USER }}
           TARGET: "/home/ubuntu/iam-client-examples/server/express"
-        with:
-          script: |
+
+      - name:
+        run: |
             cd /home/ubuntu/iam-client-examples/server/express/
             sh ./deploy.sh
             npm install
