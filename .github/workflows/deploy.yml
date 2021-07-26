@@ -55,10 +55,9 @@ jobs:
           REMOTE_HOST: ${{ secrets.SERVER_HOST }}
           REMOTE_USER: ${{ secrets.SERVER_USER }}
           TARGET: "/home/ubuntu/iam-client-examples/server/express"
-
-      - name: Deploy Server
-        run: |
-          cd /home/ubuntu/iam-client-examples/server/express
-          sh ./deploy.sh
-          npm install
-          npm run
+        with:
+          script: |
+            cd /home/ubuntu/iam-client-examples/server/express/
+            sh ./deploy.sh
+            npm install
+            npm run

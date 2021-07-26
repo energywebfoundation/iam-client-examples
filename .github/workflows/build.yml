@@ -20,7 +20,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: cancel-previous
     env:
-      APP_DIR: /home/ubuntu/iam-client-examples
+      APP_DIR: $HOME/work/iam-client-examples/iam-client-examples/client
     strategy:
       matrix:
         DAPPS: [angular-dapp, react-dapp, vue-dapp]
@@ -55,4 +55,4 @@ jobs:
           SOURCE: "./"
           REMOTE_HOST: ${{ secrets.SERVER_HOST }}
           REMOTE_USER: ${{ secrets.SERVER_USER }}
-          TARGET: ${{ env.APP_DIR }}/${{ matrix.DAPPS }}
+          TARGET: /home/ubuntu/iam-client-examples/${{ matrix.DAPPS }}
