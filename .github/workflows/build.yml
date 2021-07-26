@@ -55,8 +55,8 @@ jobs:
       - name: Deploy to Server
         uses: easingthemes/ssh-deploy@main
         env:
-            SSH_PRIVATE_KEY: ${{ secrets.SERVER_SSH_KEY }}
-            SOURCE: ${{ env.APP_DIR }}
-            REMOTE_HOST: ${{ secrets.SERVER_HOST }}
-            REMOTE_USER: ${{ secrets.SERVER_USET }}
-            TARGET: ${{ env.APP_DIR }}/${{ matrix.DAPPS }}
+          SSH_PRIVATE_KEY: ${{ secrets.SERVER_SSH_KEY }}
+          SOURCE: ${{ env.APP_DIR }}
+          REMOTE_HOST: ${{ secrets.SERVER_HOST }}
+          REMOTE_USER: ${{ secrets.SERVER_USET }}
+          TARGET: ${{ env.APP_DIR }}/${{ matrix.DAPPS }}
