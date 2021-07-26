@@ -58,5 +58,5 @@ jobs:
           SSH_PRIVATE_KEY: ${{ secrets.SSH_KEY }}
           SOURCE: ${{ env.APP_DIR }}
           REMOTE_HOST: ${{ secrets.SERVER_HOST }}
-          REMOTE_USER: ${{ secrets.SERVER_USET }}
+          REMOTE_USER: ${{ secrets.SERVER_USER }}
           TARGET: ${{ env.APP_DIR }}/${{ matrix.DAPPS }}
