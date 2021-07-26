@@ -43,16 +43,23 @@ function App() {
   const [unauthorized, setUnauthorized] = useState<Boolean>(false);
 
   useEffect(() => {
-    const getRoles = async () => {
-      const res = await axios.get(`${config.backendUrl}/roles`, {
-        withCredentials: true,
-      });
-      if (res.status !== 200) {
-        logout();
+    const loginStatus = async () => {
+      try {
+        const res = await axios.get(`${config.backendUrl}/login-status`, {
+          withCredentials: true,
+        });
+        const { loginStatus } = res.data;
+        if (!loginStatus) {
+          logout();
+        }
+      } catch (err) {
+        if (err?.response?.status === 401) {
+          logout();
+        }
       }
     };
 
-    getRoles();
+    loginStatus();
   });
 
   const login = async function (initOptions?: {

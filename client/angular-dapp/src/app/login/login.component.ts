@@ -29,15 +29,22 @@ export class LoginComponent {
   roles: Role[] = JSON.parse(localStorage.getItem('roles')) || [];
 
   ngOnInit() {
-    const getRoles = async () => {
-      const res = await axios.get(`${environment.BACKEND_URL}/roles`, {
-        withCredentials: true,
-      });
-      if (res.status !== 200) {
-        this.logout();
+    const loginStatus = async () => {
+      try {
+        const res = await axios.get(`${environment.BACKEND_URL}/login-status`, {
+          withCredentials: true,
+        });
+        const { loginStatus } = res.data;
+        if (!loginStatus) {
+          this.logout();
+        }
+      } catch (err) {
+        if (err?.response?.status === 401) {
+          this.logout();
+        }
       }
     };
-    getRoles();
+    loginStatus();
   }
 
   async login({ walletProvider }: { walletProvider: WalletProvider }) {

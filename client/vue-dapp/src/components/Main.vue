@@ -119,15 +119,22 @@ export default Vue.extend({
     };
   },
   async created() {
-    const getRoles = async () => {
-      const res = await axios.get(`${config.backendUrl}/roles`, {
-        withCredentials: true,
-      });
-      if (res.status !== 200) {
-        this.logout();
+    const loginStatus = async () => {
+      try {
+        const res = await axios.get(`${config.backendUrl}/login-status`, {
+          withCredentials: true,
+        });
+        const { loginStatus } = res.data;
+        if (!loginStatus) {
+          this.logout();
+        }
+      } catch (err) {
+        if (err?.response?.status === 401) {
+          this.logout();
+        }
       }
     };
-    getRoles();
+    loginStatus();
   },
   methods: {
     login: async function({
