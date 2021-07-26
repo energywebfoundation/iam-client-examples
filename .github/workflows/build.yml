@@ -20,7 +20,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: cancel-previous
     env:
-      APP_DIR: $HOME/work/iam-client-examples/iam-client-examples/client
+      APP_DIR: /home/ubuntu/iam-client-examples
     strategy:
       matrix:
         DAPPS: [angular-dapp, react-dapp, vue-dapp]
