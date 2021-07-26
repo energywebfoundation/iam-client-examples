@@ -41,7 +41,6 @@ jobs:
       - name: Deploy & Build server component
         # if: github.ref == 'refs/heads/master'
         run: |
-          cd ${{ env.SERVER_DIR }}/express
           rsync -e "ssh -o StrictHostKeyChecking=no" -rv dist ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }}:$${{ env.SERVER_DIR }}/express
           sh ./deploy.sh
           npm install

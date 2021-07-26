@@ -48,7 +48,5 @@ jobs:
           aws-region: us-east-2
 
       - name: Deploy on master branch
-        if: github.ref == 'refs/heads/master'
-        run: |
-          cd ${{ env.APP_DIR }}
-          rsync -e "ssh -o StrictHostKeyChecking=no" -rv dist ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }}:${{ env.APP_DIR }}/${{ matrix.DAPPS }}
+        # if: github.ref == 'refs/heads/master'
+        run: rsync -e "ssh -o StrictHostKeyChecking=no" -rv dist ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }}:${{ env.APP_DIR }}/${{ matrix.DAPPS }}
