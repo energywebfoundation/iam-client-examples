@@ -85,7 +85,7 @@ export class LoginComponent {
 
   async logout() {
     await this.iamService.iam.closeConnection();
+    this.did = '';
     localStorage.clear();
-    window.location.reload();
   }
 }

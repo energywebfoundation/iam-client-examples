@@ -35,8 +35,9 @@ type Role = {
 
 function App() {
   const userRoles = localStorage.getItem("roles");
-  const did = localStorage.getItem("did");
+  const userDID = localStorage.getItem("did") || "";
   const roles = userRoles ? (JSON.parse(userRoles) as Role[]) : [];
+  const [did, setDID] = useState<string>(userDID);
   const [errored, setErrored] = useState<Boolean>(false);
   const [loading, setLoading] = useState<Boolean>(false);
   const [unauthorized, setUnauthorized] = useState<Boolean>(false);
@@ -66,6 +67,7 @@ function App() {
       );
 
       if (did) {
+        setDID(did);
         localStorage.setItem("did", did);
       }
       if (identityToken) {
@@ -94,8 +96,8 @@ function App() {
 
   const logout = async function () {
     await iam.closeConnection();
+    setDID("");
     localStorage.clear();
-    window.location.reload();
   };
 
   const loadingMessage = (

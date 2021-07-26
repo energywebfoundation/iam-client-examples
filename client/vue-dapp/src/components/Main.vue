@@ -176,8 +176,8 @@ export default Vue.extend({
     },
     logout: async function() {
       await this.$IAM.closeConnection();
+      this.did = "";
       localStorage.clear();
-      window.location.reload();
     },
   },
 });
