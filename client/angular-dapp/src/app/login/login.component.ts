@@ -16,33 +16,50 @@ type Role = {
 })
 export class LoginComponent {
   constructor(private readonly iamService: IamService) {}
-
   providers = WalletProvider;
   isLoading = false;
   errored = false;
   unauthorized = false;
-  did: string = undefined;
+  did: string = localStorage.getItem('did');
   enrolmentURL = environment.ENROLMENT_URL
     ? `${environment.ENROLMENT_URL}&returnUrl=${encodeURIComponent(
         window.location.href
       )}`
     : '';
-  roles: Role[] = [];
+  roles: Role[] = JSON.parse(localStorage.getItem('roles')) || [];
+
+  ngOnInit() {
+    const loginStatus = async () => {
+      try {
+        const res = await axios.get(`${environment.BACKEND_URL}/login-status`, {
+          withCredentials: true,
+        });
+        const { loginStatus } = res.data;
+        if (!loginStatus) {
+          this.logout();
+        }
+      } catch (err) {
+        if (err?.response?.status === 401) {
+          this.logout();
+        }
+      }
+    };
+    loginStatus();
+  }
 
   async login({ walletProvider }: { walletProvider: WalletProvider }) {
     this.isLoading = true;
     this.errored = false;
     this.unauthorized = false;
     try {
-      const {
-        identityToken,
-        did,
-      } = await this.iamService.iam.initializeConnection({
-        walletProvider,
-      });
+      const { identityToken, did } =
+        await this.iamService.iam.initializeConnection({
+          walletProvider,
+        });
 
       if (did) {
         this.did = did;
+        localStorage.setItem('did', did);
       }
 
       if (identityToken) {
@@ -60,6 +77,7 @@ export class LoginComponent {
         { withCredentials: true }
       );
       this.roles = roles;
+      localStorage.setItem('roles', JSON.stringify(roles));
     } catch (err) {
       console.log(err);
       this.did = undefined;
@@ -73,7 +91,8 @@ export class LoginComponent {
   }
 
   async logout() {
-    this.did = '';
     await this.iamService.iam.closeConnection();
+    this.did = '';
+    localStorage.clear();
   }
 }

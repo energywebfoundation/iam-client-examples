@@ -57,7 +57,10 @@
         </div>
       </div>
       <div class="container">
-        <button @click="login({ walletProvider: 'WalletConnect' })" class="button">
+        <button
+          @click="login({ walletProvider: 'WalletConnect' })"
+          class="button"
+        >
           <img class="walletconnect" src="../assets/wallet-connect-icon.svg" />
           <span>Login with Wallet Connect</span>
         </button>
@@ -65,7 +68,10 @@
           <img class="metamask" src="../assets/metamask-logo.svg" />
           <span>Login with Metamask</span>
         </button>
-        <button @click="login({ walletProvider: 'EwKeyManager' })" class="button">
+        <button
+          @click="login({ walletProvider: 'EwKeyManager' })"
+          class="button"
+        >
           <img class="metamask" src="../assets/key-manager-icon.svg" />
           <span>Login with EW Key Manager</span>
         </button>
@@ -89,32 +95,50 @@ type Role = {
 export default Vue.extend({
   name: "Main",
   components: {
-    Spinner
+    Spinner,
   },
   data: function(): {
     isLoading: boolean;
     errored: boolean;
     unauthorized: boolean;
     did?: string;
-    roles: Role[];
+    roles: Role[] | [];
     enrolmentUrl?: string;
   } {
     return {
       isLoading: false,
       errored: false,
       unauthorized: false,
-      did: "",
-      roles: [],
+      did: localStorage.did,
+      roles: localStorage.roles ? JSON.parse(localStorage.roles) : [],
       enrolmentUrl: config.enrolmentUrl
         ? `${config.enrolmentUrl}&returnUrl=${encodeURIComponent(
             window.location.href
           )}`
-        : ""
+        : "",
     };
+  },
+  async created() {
+    const loginStatus = async () => {
+      try {
+        const res = await axios.get(`${config.backendUrl}/login-status`, {
+          withCredentials: true,
+        });
+        const { loginStatus } = res.data;
+        if (!loginStatus) {
+          this.logout();
+        }
+      } catch (err) {
+        if (err?.response?.status === 401) {
+          this.logout();
+        }
+      }
+    };
+    loginStatus();
   },
   methods: {
     login: async function({
-      walletProvider
+      walletProvider,
     }: {
       walletProvider: WalletProvider;
     }) {
@@ -123,21 +147,28 @@ export default Vue.extend({
       this.unauthorized = false;
       try {
         const { did, identityToken } = await this.$IAM.initializeConnection({
-          walletProvider
+          walletProvider,
         });
         if (did) {
           this.did = did;
+          localStorage.setItem("did", did);
         }
 
         if (identityToken) {
-          await axios.post(`${config.backendUrl}/login`, { identityToken }, { withCredentials: true });
+          await axios.post(
+            `${config.backendUrl}/login`,
+            { identityToken },
+            { withCredentials: true }
+          );
         }
 
         const { data: roles } = await axios.get<Role[]>(
-          `${config.backendUrl}/roles`, { withCredentials: true }
+          `${config.backendUrl}/roles`,
+          { withCredentials: true }
         );
 
         this.roles = roles;
+        localStorage.setItem("roles", JSON.stringify(roles));
         this.isLoading = false;
       } catch (err) {
         console.log(err);
@@ -151,10 +182,11 @@ export default Vue.extend({
       this.isLoading = false;
     },
     logout: async function() {
+      await this.$IAM.closeConnection();
       this.did = "";
-      await this.$IAM.closeConnection()
-    }
-  }
+      localStorage.clear();
+    },
+  },
 });
 </script>
 

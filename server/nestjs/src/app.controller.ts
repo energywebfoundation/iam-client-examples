@@ -45,4 +45,22 @@ export class AppController {
   getUser(@Req() req: Request) {
     return req.user;
   }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('login-status')
+  isLoggedIn(@Req() req: Request, @Res() res: Response) {
+    const user = req.user as {
+      did: string;
+      verifiedRoles: [];
+      iat: number;
+      exp?: number;
+    };
+
+    if (user) {
+      const { did, exp } = user;
+      return res.send({ loginStatus: true, did, tokenExpiryDate: exp });
+    }
+
+    return res.send({ loginStatus: false });
+  }
 }
