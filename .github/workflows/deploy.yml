@@ -41,7 +41,8 @@ jobs:
           key: ${{ secrets.SERVER_KEY }}
           known_hosts: ${{ secrets.SERVER_HOST }}
 
-      # - name: Deploy client on instance
+      - name: Deploy client on instance
+        run: ssh -T ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }}
       #   run: rsync -e "ssh -o StrictHostKeyChecking=no" -rv dist $SERVER_USER@$SERVER_HOST:${{ env.APP_DIR }}/${{ matrix.DAPPS }}
 
       - name: Deploy client on instance
