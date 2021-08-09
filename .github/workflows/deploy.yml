@@ -40,7 +40,7 @@ jobs:
         with:
           switches: -rv
           path: dist/*
-          remote_path: ${{ env.SERVER_DIR }}/{{ env.APP_DIR }}/${{ matrix.DAPPS }}
+          remote_path: ${{ env.APP_DIR }}/${{ matrix.DAPPS }}
           remote_host: ${{ secrets.SERVER_HOST }}
           remote_user: ${{ secrets.SERVER_USER }}
           remote_key: ${{ secrets.SERVER_KEY }}
