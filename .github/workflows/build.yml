@@ -39,20 +39,3 @@ jobs:
           cd ${{ env.APP_DIR }}/${{ matrix.DAPPS }}
           npm ci
           npm run build
-
-      - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: us-east-2
-
-      - name: Deploy client dApp
-        uses: easingthemes/ssh-deploy@main
-        if: github.ref == 'refs/heads/master'
-        env:
-          SSH_PRIVATE_KEY: ${{ secrets.SSH_KEY }}
-          SOURCE: "./"
-          REMOTE_HOST: ${{ secrets.SERVER_HOST }}
-          REMOTE_USER: ${{ secrets.SERVER_USER }}
-          TARGET: /home/ubuntu/iam-client-examples/${{ matrix.DAPPS }}

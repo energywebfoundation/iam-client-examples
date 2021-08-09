@@ -1,8 +1,8 @@
-name: Deploy Server
+name: Deploy
 
 on:
   push:
-    branches: [ 'master' ]
+    branches: [ 'master', 'DOI-887_iam_client_example_to_GH' ]
   pull_request:
     branches: [ 'master' ]
 
@@ -20,7 +20,8 @@ jobs:
     runs-on: ubuntu-latest
     needs: cancel-previous
     env:
-      SERVER_DIR: $HOME/iam-client-examples/server
+      SERVER_DIR: ~/iam-client-examples/server
+      APP_DIR: ~/iam-client-examples/client
 
     steps:
       - uses: actions/checkout@v2
@@ -31,34 +32,25 @@ jobs:
         with:
           node-version: '14'
 
-      - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v1
+      # - name: Deploy on instance
+      #   uses: burnett01/rsync-deployments@5.0
+      #   with:
+      #     switches: -rv
+      #     path: dist/*
+      #     remote_path: ${{ env.SERVER_DIR }}/express
+      #     remote_host: ${{ secrets.SERVER_HOST }}
+      #     remote_user: ${{ secrets.SERVER_USER }}
+      #     remote_user: ${{ secrets.SERVER_KEY }}
+
+      - name: Deploy server on instance
+        uses: appleboy/ssh-action@master
         with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: us-east-2
-
-      # - name: Deploy & Build server component
-      #   if: github.ref == 'refs/heads/master'
-      #   run: |
-      #     rsync -e "ssh -o StrictHostKeyChecking=no" -rv dist ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }}:$${{ env.SERVER_DIR }}/express
-      #     sh ./deploy.sh
-      #     npm install
-      #     npm run
-
-      - name: SSH to AWS
-        uses: easingthemes/ssh-deploy@main
-        # if: github.ref == 'refs/heads/master'
-        env:
-          SSH_PRIVATE_KEY: ${{ secrets.SSH_KEY }}
-          SOURCE: "./"
-          REMOTE_HOST: ${{ secrets.SERVER_HOST }}
-          REMOTE_USER: ${{ secrets.SERVER_USER }}
-          TARGET: "/home/ubuntu/iam-client-examples/server/express"
-
-      - name: Deploy server
-        run: |
-            cd /home/ubuntu/iam-client-examples/server/express/
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          password: ${{ secrets.SERVER_KEY }}
+          port: ${{ secrets.SERVER_PORT }}
+          script: |
+            cd ${{ env.SERVER_DIR }}/express
             sh ./deploy.sh
             npm install
             npm run
