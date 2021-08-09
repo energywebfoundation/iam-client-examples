@@ -35,15 +35,24 @@ jobs:
         with:
           node-version: '14'
 
-      - name: Deploy client on instance
-        uses: burnett01/rsync-deployments@5.0
+      - name: Install SSH key
+        uses: shimataro/ssh-key-action@v2
         with:
-          switches: -rv
-          path: dist/*
-          remote_path: ${{ env.APP_DIR }}/${{ matrix.DAPPS }}
-          remote_host: ${{ secrets.SERVER_HOST }}
-          remote_user: ${{ secrets.SERVER_USER }}
-          remote_key: ${{ secrets.SERVER_KEY }}
+          key: ${{ secrets.SERVER_KEY }}
+          known_hosts: ${{ secrets.SERVER_HOST }}
+
+      - name: Deploy client on instance
+        run: rsync -e "ssh -o StrictHostKeyChecking=no" -rv dist $SERVER_USER@$SERVER_HOST:${{ env.APP_DIR }}/${{ matrix.DAPPS }}
+
+      # - name: Deploy client on instance
+      #   uses: burnett01/rsync-deployments@5.0
+      #   with:
+      #     switches: -rv
+      #     path: dist/*
+      #     remote_path: ${{ env.APP_DIR }}/${{ matrix.DAPPS }}
+      #     remote_host: ${{ secrets.SERVER_HOST }}
+      #     remote_user: ${{ secrets.SERVER_USER }}
+      #     remote_key: ${{ secrets.SERVER_KEY }}
 
       - name: Deploy server on instance
         uses: appleboy/ssh-action@master
