@@ -21,10 +21,6 @@ jobs:
     needs: cancel-previous
     env:
       SERVER_DIR: ~/iam-client-examples/server
-      APP_DIR: ~/iam-client-examples/client
-    strategy:
-      matrix:
-        DAPPS: [angular-dapp, react-dapp, vue-dapp]
 
     steps:
       - uses: actions/checkout@v2
@@ -34,16 +30,6 @@ jobs:
       - uses: actions/setup-node@v2-beta
         with:
           node-version: '14'
-
-      # - name: Deploy client on instance
-      #   uses: burnett01/rsync-deployments@5.0
-      #   with:
-      #     switches: -rv
-      #     path: dist/*
-      #     remote_path: ${{ env.APP_DIR }}/${{ matrix.DAPPS }}
-      #     remote_host: ${{ secrets.SERVER_HOST }}
-      #     remote_user: ${{ secrets.SERVER_USER }}
-      #     remote_key: ${{ secrets.SERVER_KEY }}
 
       - name: Deploy server on instance
         uses: appleboy/ssh-action@master
