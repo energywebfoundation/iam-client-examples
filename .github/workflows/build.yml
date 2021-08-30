@@ -2,7 +2,7 @@ name: Build Client
 
 on:
   push:
-    branches: [ 'master' ]
+    branches: [ 'master', 'DOI-887_iam_client_example_to_GH' ]
   pull_request:
     branches: [ 'master' ]
 

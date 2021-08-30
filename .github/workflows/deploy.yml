@@ -41,5 +41,3 @@ jobs:
           script: |
             cd ${{ env.SERVER_DIR }}/express
             sh ./deploy.sh
-            npm install
-            npm run
