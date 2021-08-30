@@ -40,13 +40,15 @@ jobs:
           npm ci
           npm run build
 
-      - name: Deploy client on instance
-        uses: trendyminds/github-actions-rsync@master
-        with:
-          RSYNC_OPTIONS: -rv
-          RSYNC_SOURCE: ${{ env.APP_DIR }}/${{ matrix.DAPPS }}
-          RSYNC_TARGET: ~/iam-client-examples/${{ matrix.DAPPS }}
-        env:
-          SSH_HOSTNAME: ${{ secrets.SERVER_HOST }}
-          SSH_USERNAME: ${{ secrets.SERVER_USER }}
-          SSH_PRIVATE_KEY: ${{ secrets.SERVER_KEY }}
+      - name: content of /github/workspace/
+        run: ls -al /github/workspace/
+
+      # - name: Deploy client on instance
+      #   uses: burnett01/rsync-deployments@5.0
+      #   with:
+      #     switches: -rv
+      #     path: ${{ env.APP_DIR }}/${{ matrix.DAPPS }}
+      #     remote_path: ~/iam-client-examples/${{ matrix.DAPPS }}
+      #     remote_host: ${{ secrets.SERVER_HOST }}
+      #     remote_user: ${{ secrets.SERVER_USER }}
+      #     remote_key: ${{ secrets.SERVER_KEY }}
