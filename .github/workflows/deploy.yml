@@ -2,7 +2,7 @@ name: Deploy Server
 
 on:
   push:
-    branches: [ 'master', 'DOI-887_iam_client_example_to_GH' ]
+    branches: [ 'master' ]
   pull_request:
     branches: [ 'master' ]
 

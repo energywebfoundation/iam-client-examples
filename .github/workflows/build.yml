@@ -44,7 +44,7 @@ jobs:
         uses: burnett01/rsync-deployments@5.0
         with:
           switches: -rv
-          path: ${{ env.APP_DIR }}/${{ matrix.DAPPS }}
+          path: ${{ matrix.DAPPS }}
           remote_path: ~/iam-client-examples/${{ matrix.DAPPS }}
           remote_host: ${{ secrets.SERVER_HOST }}
           remote_user: ${{ secrets.SERVER_USER }}
