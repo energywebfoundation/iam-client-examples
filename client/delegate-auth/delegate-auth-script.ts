@@ -31,6 +31,6 @@ import {
         createDocument: false
     })
     const did = newIam.getDid();
-    console.log(did);
+    console.log("my did is", did);
     //const doc = newIam.getDidDocument();
 })();

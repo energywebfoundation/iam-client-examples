@@ -4,25 +4,15 @@
   "description": "Sample example of a nodejs application which authenticates to the example server examples with a key which is not the owner of the DID but is a authentication delegate of the DID.",
   "main": "delegate-auth.js",
   "scripts": {
-    "start": "nodemon delegate-auth.js"
+    "script1": "ts-node delegate-auth-script.ts"
   },
   "author": "",
   "license": "ISC",
-  "devDependencies": {
-    "dotenv": "^10.0.0",
-    "nodemon": "^2.0.12"
-  },
+  "devDependencies": {},
   "dependencies": {
-    "@ew-did-registry/did": "^0.5.2-alpha.62.0",
-    "@ew-did-registry/did-ethr-resolver": "^0.5.2-alpha.62.0",
-    "@ew-did-registry/did-resolver-interface": "^0.5.2-alpha.62.0",
-    "@ew-did-registry/keys": "^0.5.2-alpha.65.0",
-    "@ew-did-registry/proxyidentity": "^0.5.2-alpha.65.0",
-    "express": "^4.17.1",
     "iam-client-lib": "3.0.0-alpha.43",
     "node-emoji": "^1.11.0",
     "ts-node": "^10.2.1",
-    "typescript": "^4.4.2",
-    "uuid": "^8.3.2"
+    "typescript": "^4.4.2"
   }
 }
