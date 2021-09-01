@@ -40,8 +40,8 @@ jobs:
           npm ci
           npm run build
 
-      - name: content of /github/workspace/
-        run: ls -al /github/workspace/
+      - name: content of APPDIR
+        run: ls -al ${{ env.APP_DIR }}/${{ matrix.DAPPS }}
 
       # - name: Deploy client on instance
       #   uses: burnett01/rsync-deployments@5.0
