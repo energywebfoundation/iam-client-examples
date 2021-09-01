@@ -43,12 +43,16 @@ jobs:
       - name: content of APPDIR
         run: ls -al ${{ env.APP_DIR }}/${{ matrix.DAPPS }}
 
+      - name: pwd APPDIR
+        run: cd ${{ env.APP_DIR }}/${{ matrix.DAPPS }} && pwd
+
+
       - name: Deploy client on instance
         uses: burnett01/rsync-deployments@5.0
         with:
           switches: -rv
-          # path: ${{ env.APP_DIR }}/${{ matrix.DAPPS }}
-          path: dist/*
+          path: ${{ env.APP_DIR }}/${{ matrix.DAPPS }}
+          # path: dist/*
           remote_path: ~/iam-client-examples/${{ matrix.DAPPS }}
           remote_host: ${{ secrets.SERVER_HOST }}
           remote_user: ${{ secrets.SERVER_USER }}
