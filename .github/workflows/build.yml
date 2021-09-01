@@ -46,7 +46,6 @@ jobs:
       - name: pwd APPDIR
         run: cd ${{ env.APP_DIR }}/${{ matrix.DAPPS }} && pwd
 
-ßß
       - name: Deploy client on instance
         uses: burnett01/rsync-deployments@5.0
         with:
