@@ -2,7 +2,7 @@ name: Build Client
 
 on:
   push:
-    branches: [ 'master', 'DOI-887_iam_client_example_to_GH' ]
+    branches: [ 'master' ]
   pull_request:
     branches: [ 'master' ]
 
@@ -40,18 +40,10 @@ jobs:
           npm ci
           npm run build
 
-      - name: content of APPDIR
-        run: ls -al ${{ env.APP_DIR }}/${{ matrix.DAPPS }}
-
-      - name: pwd APPDIR
-        run: cd ${{ env.APP_DIR }}/${{ matrix.DAPPS }} && pwd
-
       - name: Deploy client on instance
         uses: burnett01/rsync-deployments@5.0
         with:
           switches: -rv
-          # path: ${{ env.APP_DIR }}/${{ matrix.DAPPS }}
-          # path: dist/*
           path: client/${{ matrix.DAPPS }}
           remote_path: ~/iam-client-examples/${{ matrix.DAPPS }}
           remote_host: ${{ secrets.SERVER_HOST }}
