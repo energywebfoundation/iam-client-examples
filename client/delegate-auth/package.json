@@ -9,7 +9,9 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@ew-did-registry/keys": "0.5.2-alpha.65.0",
+    "@ew-did-registry/keys": "0.5.2-alpha.75.0",
+    "axios": "^0.21.4",
+    "ethers": "^5.4.6",
     "iam-client-lib": "^3.0.0-alpha.45",
     "node-emoji": "^1.11.0",
     "ts-node": "^10.2.1",
