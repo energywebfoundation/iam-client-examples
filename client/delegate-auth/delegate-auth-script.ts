@@ -27,45 +27,39 @@ import {
 import axios from 'axios';
 import * as emoji from 'node-emoji';
 import { Keys } from '@ew-did-registry/keys';
-import { utils, Signer, providers } from 'ethers';
+import { providers, Wallet } from 'ethers';
 import { InitializeData } from 'iam-client-lib/dist/src/iam';
+import { JWT } from '@ew-did-registry/jwt';
 
+const backendUrl = 'https://did-auth-demo.energyweb.org';
 
-type HeaderType = { alg?: string; typ?: string; };
-type SignerType = providers.JsonRpcSigner | Signer;
-type PayloadType = { iss: string; claimData: { blockNumber: string };}
-
-const backendUrl =  'http://localhost:3333';
-
-const connectIAM = async (privateKey: string) : Promise<{iamAgent : IAM, connectionInfos: InitializeData | undefined}> => {
-    // const privateKey = '14c4ce13e2ab410ac230f40a803bb2e978feaf6bd847bf0712087189d7493aa1';
+const connectIAM = async (privateKey: string): Promise<{ iamAgent: IAM, connectionInfos: InitializeData | undefined }> => {
 
     let connectionInfos = undefined;
 
-        const iamAgent: IAM = new IAM({
-            rpcUrl: "https://volta-rpc-vkn5r5zx4ke71f9hcu0c.energyweb.org",
-            privateKey,
-        });
-        setCacheClientOptions(73799, {
-            url: "https://volta-identitycache.energyweb.org/",
-        });
-        
-        setChainConfig(73799, {
-            rpcUrl: "https://volta-rpc-vkn5r5zx4ke71f9hcu0c.energyweb.org"
-        });
-        connectionInfos = await iamAgent.initializeConnection({
-            walletProvider: WalletProvider.WalletConnect,
-            initCacheServer: false,
-            createDocument: true,
-        });
-        console.log(`${emoji.get('large_green_circle')} IAM Owner created \x1b[32m%s\x1b[0m`, `\n`);
-        console.log(`\t${emoji.get('scroll')} owner DID: \x1b[32m%s\x1b[0m`, `${connectionInfos.did}\n`);
-        console.log(`\t${emoji.get('scroll')} owner identity token: \x1b[32m%s\x1b[0m`, `${connectionInfos.identityToken}\n`);
-        // console.log(`${emoji.get('large_green_circle')} IAM Asset created \x1b[32m%s\x1b[0m`, `\n`);
-    return {iamAgent, connectionInfos};
+    const iamAgent: IAM = new IAM({
+        rpcUrl: "https://volta-rpc.energyweb.org",
+        privateKey,
+    });
+    setCacheClientOptions(73799, {
+        url: "https://volta-identitycache.energyweb.org/",
+    });
+
+    setChainConfig(73799, {
+        rpcUrl: "https://volta-rpc-vkn5r5zx4ke71f9hcu0c.energyweb.org"
+    });
+    connectionInfos = await iamAgent.initializeConnection({
+        walletProvider: WalletProvider.WalletConnect,
+        initCacheServer: false,
+        createDocument: true,
+    });
+    console.log(`${emoji.get('large_green_circle')} IAM Owner created \x1b[32m%s\x1b[0m`, `\n`);
+    console.log(`\t${emoji.get('scroll')} owner DID: \x1b[32m%s\x1b[0m`, `${connectionInfos.did}\n`);
+    console.log(`\t${emoji.get('scroll')} owner identity token: \x1b[32m%s\x1b[0m`, `${connectionInfos.identityToken}\n`);
+    return { iamAgent, connectionInfos };
 };
 
-const registerAsset = async (assetOwner: IAM): Promise<Partial<{assetAddress: string, assetPubKey: string, assetPrivKey: string}>> => {
+const registerAsset = async (assetOwner: IAM): Promise<Partial<{ assetAddress: string, assetPubKey: string, assetPrivKey: string }>> => {
 
     // Creates a new asset using iam-client-lib registerAsset()     
     const assetAddress: string = await assetOwner.registerAsset();
@@ -85,7 +79,7 @@ const registerAsset = async (assetOwner: IAM): Promise<Partial<{assetAddress: st
     };
 };
 
-const addAssetInDocument = async (assetOwner: IAM, assetAddress: string, assetPublicKey: string) : Promise<boolean> => {
+const addAssetInDocument = async (assetOwner: IAM, assetAddress: string, assetPublicKey: string): Promise<boolean> => {
     const isDIdDocUpdated = await assetOwner.updateDidDocument({
         didAttribute: DIDAttribute.PublicKey,
         did: `did:ethr:${assetAddress}`,
@@ -100,54 +94,35 @@ const addAssetInDocument = async (assetOwner: IAM, assetAddress: string, assetPu
     return isDIdDocUpdated;
 };
 
-const displayError = (err: Error, step : string) => {
+const displayError = (err: Error, step: string) => {
     console.log(`${emoji.get('red_circle')} [ ${step} ] : \x1b[31m%s\x1b[0m`, `: ${err}\n`);
 };
 
-
-const connectToBackend = async (iamAgent : IAM, token: string, backendUrl: string) => {
+const connectToBackend = async (iamAgent: IAM, token: string, backendUrl: string) => {
     console.log("Connecting Token >> ", token);
     await axios.post<{ token: string }>(
         `${backendUrl}/login`,
         {
-          data: token,
+            data: token,
         },
         { withCredentials: true }
-      );
+    );
 }
 
-const encodeData = (data: HeaderType | PayloadType | string) => {
-    if (typeof(data) === 'string')
-        return utils.base64.encode(Buffer.from(data));
-    return utils.base64.encode(Buffer.from(JSON.stringify(data)));
-}
+const createIdentityProofWithDelegate = async (secp256k1PrivateKey: string, rpcUrl: string, identityProofDid: string): Promise<string> => {
+    const provider = new providers.JsonRpcProvider(rpcUrl);
+    const wallet = new Wallet(secp256k1PrivateKey, provider);
 
-const createIdentity = async (did: string, signer : providers.JsonRpcSigner | Signer) : Promise<string> => {
+    const blockNumber = (await provider.getBlockNumber()).toString();
 
-    const payload : PayloadType = {
-        iss: did,
+    const payload: { iss: string; claimData: { blockNumber: string }; } = {
+        iss: identityProofDid,
         claimData: {
-            blockNumber: "424242"
+            blockNumber
         }
     };
-
-    const header : HeaderType = {
-        alg: 'ES256',
-        typ: 'JWT'
-    };
-
-    const encodedPayload = encodeData(payload);
-    const encodedHeader = encodeData(header);
-    const identity = `${encodedHeader}.${encodedPayload}`
-
-    const message = utils.arrayify(
-        utils.keccak256(Buffer.from(identity))
-    )
-    const signature = await signer.signMessage(message);
-    const encodedSignature = encodeData(signature);
-
-    const identityToken = `${encodedHeader}.${encodedPayload}.${encodedSignature}`;
-
+    const jwt = new JWT(wallet);
+    const identityToken = jwt.sign(payload);
     return identityToken;
 }
 
@@ -155,46 +130,48 @@ const createIdentity = async (did: string, signer : providers.JsonRpcSigner | Si
     try {
         const ownerPrivateKey = '14c4ce13e2ab410ac230f40a803bb2e978feaf6bd847bf0712087189d7493aa1';
 
-        const { iamAgent } = await connectIAM(ownerPrivateKey);
+        const { iamAgent, connectionInfos } = await connectIAM(ownerPrivateKey);
         try {
             const assetOwner = iamAgent;
+
             const { assetAddress, assetPubKey, assetPrivKey } = await registerAsset(assetOwner);
 
             try {
                 // Adding the new key to the assets verification methods
                 const isDIdDocUpdated = await addAssetInDocument(assetOwner, assetAddress!, assetPubKey!);
                 console.log(`${emoji.get('large_green_circle')} Asset added to DID: \x1b[32m%s\x1b[0m\n`, isDIdDocUpdated);
-           
+
                 try {
                     const assedDid = `did:ethr:${assetAddress}`;
+                    const ownerDid = connectionInfos!.did;
 
-                    // Creates an identity token (or uses token from iam initialization) and authenticates as the asset DID to the iam-client-examples backend
-                    const assetIdentityToken = await createIdentity(assedDid, assetOwner.getSigner() as SignerType);
-                    if (assetIdentityToken){
+                    // Creates an identity token and authenticates as the asset DID to the iam-client-examples backend
+
+                    const assetIdentityToken = await createIdentityProofWithDelegate(assetPrivKey as string, "https://volta-rpc.energyweb.org", ownerDid as string);
+                    if (assetIdentityToken) {
                         try {
-                            console.log("Asset Identity Token >>> ", assetIdentityToken, "\n");
                             await connectToBackend(assetOwner, assetIdentityToken, backendUrl);
-                        } catch(error){
-                            const err : Error = error as Error;
+                        } catch (error) {
+                            const err: Error = error as Error;
                             displayError(err, "Loging to Backend")
                         }
                     }
-                } catch(error){
-                    const err : Error = error as Error
+                } catch (error) {
+                    const err: Error = error as Error
                     displayError(err, "Connecting IAM instance");
                 }
             }
             catch (error) {
-                const err : Error = error as Error
+                const err: Error = error as Error
                 displayError(err, "UpdateDocument");
 
             }
         } catch (error) {
-            const err : Error = error as Error
+            const err: Error = error as Error
             displayError(err, "RegisterAsset");
         }
     } catch (error) {
-        const err : Error = error as Error
+        const err: Error = error as Error
         displayError(err, "InitializeConnexion");
     }
 })();
