@@ -46,11 +46,11 @@ const connectIAM = async (privateKey: string): Promise<{ iamAgent: IAM, connecti
     });
 
     setChainConfig(73799, {
-        rpcUrl: "https://volta-rpc-vkn5r5zx4ke71f9hcu0c.energyweb.org"
+        rpcUrl: "https://volta-rpc.energyweb.org"
     });
     connectionInfos = await iamAgent.initializeConnection({
         walletProvider: WalletProvider.WalletConnect,
-        initCacheServer: false,
+        initCacheServer: true,
         createDocument: true,
     });
     console.log(`${emoji.get('large_green_circle')} IAM Owner created \x1b[32m%s\x1b[0m`, `\n`);
