@@ -42,7 +42,7 @@ const connectIAM = async (privateKey: string): Promise<{ iamAgent: IAM, connecti
         privateKey,
     });
     setCacheClientOptions(73799, {
-        url: "https://volta-identitycache.energyweb.org/",
+        url: "https://identitycache-dev.energyweb.org/",
     });
 
     setChainConfig(73799, {
@@ -142,7 +142,7 @@ const createIdentityProofWithDelegate = async (secp256k1PrivateKey: string, rpcU
                 console.log(`${emoji.get('large_green_circle')} Asset added to DID: \x1b[32m%s\x1b[0m\n`, isDIdDocUpdated);
 
                 try {
-                    const assedDid = `did:ethr:${assetAddress}`;
+                    const assetDid = `did:ethr:${assetAddress}`;
                     const ownerDid = connectionInfos!.did;
 
                     // Creates an identity token and authenticates as the asset DID to the iam-client-examples backend
