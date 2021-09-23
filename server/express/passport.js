@@ -65,7 +65,7 @@ module.exports.preparePassport = () => {
   passport.use(new LoginStrategy({
     jwtSecret: private_secret,
     jwtSignOptions: {
-      algorithm: 'HS256',
+      algorithm: 'RS256',
     },
     name: LOGIN_STRATEGY,
     rpcUrl: process.env.RPC_URL || 'https://volta-rpc.energyweb.org/',
