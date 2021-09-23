@@ -28,11 +28,9 @@ import axios from 'axios';
 import * as emoji from 'node-emoji';
 import { Keys } from '@ew-did-registry/keys';
 import { providers, Wallet } from 'ethers';
-import { InitializeData } from 'iam-client-lib/dist/src/iam';
 import { JWT } from '@ew-did-registry/jwt';
 
-// const backendUrl = 'https://did-auth-demo.energyweb.org';
-const backendUrl = 'http://localhost:3333';
+const backendUrl = 'https://did-auth-demo.energyweb.org';
 
 const connectIAM = async (privateKey: string): Promise<IAM> => {
 
@@ -135,8 +133,7 @@ const createIdentityProofWithDelegate = async (secp256k1PrivateKey: string, rpcU
 
 (async () => {
     try {
-        // const ownerPrivateKey = '14c4ce13e2ab410ac230f40a803bb2e978feaf6bd847bf0712087189d7493aa1';
-        const ownerPrivateKey = 'd1d4b30e82c199d4ae0624c237dbfcee889d7ecf1a610b0ce48532013d3fb11b'
+        const ownerPrivateKey = '14c4ce13e2ab410ac230f40a803bb2e978feaf6bd847bf0712087189d7493aa1';
         const assetOwner = await connectIAM(ownerPrivateKey);
         try {
             const { assetAddress, assetPubKey, assetPrivKey } = await registerAsset(assetOwner);
