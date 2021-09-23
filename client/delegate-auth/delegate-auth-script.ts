@@ -31,9 +31,10 @@ import { providers, Wallet } from 'ethers';
 import { InitializeData } from 'iam-client-lib/dist/src/iam';
 import { JWT } from '@ew-did-registry/jwt';
 
-const backendUrl = 'https://did-auth-demo.energyweb.org';
+// const backendUrl = 'https://did-auth-demo.energyweb.org';
+const backendUrl = 'http://localhost:3333';
 
-const connectIAM = async (privateKey: string): Promise<{ iamAgent: IAM, connectionInfos: InitializeData | undefined }> => {
+const connectIAM = async (privateKey: string): Promise<IAM> => {
 
     let connectionInfos = undefined;
 
@@ -42,7 +43,7 @@ const connectIAM = async (privateKey: string): Promise<{ iamAgent: IAM, connecti
         privateKey,
     });
     setCacheClientOptions(73799, {
-        url: "https://identitycache-dev.energyweb.org/",
+        url: "https://identitycache-dev.energyweb.org/v1",
     });
 
     setChainConfig(73799, {
@@ -56,7 +57,7 @@ const connectIAM = async (privateKey: string): Promise<{ iamAgent: IAM, connecti
     console.log(`${emoji.get('large_green_circle')} IAM Owner created \x1b[32m%s\x1b[0m`, `\n`);
     console.log(`\t${emoji.get('scroll')} owner DID: \x1b[32m%s\x1b[0m`, `${connectionInfos.did}\n`);
     console.log(`\t${emoji.get('scroll')} owner identity token: \x1b[32m%s\x1b[0m`, `${connectionInfos.identityToken}\n`);
-    return { iamAgent, connectionInfos };
+    return iamAgent;
 };
 
 const registerAsset = async (assetOwner: IAM): Promise<Partial<{ assetAddress: string, assetPubKey: string, assetPrivKey: string }>> => {
@@ -69,8 +70,8 @@ const registerAsset = async (assetOwner: IAM): Promise<Partial<{ assetAddress: s
     // // Generates a new secp256k1 keypair
     const keyPair = new Keys();
     console.log(`\t${emoji.get('closed_lock_with_key')} Setting asset's Keypair: \x1b[32m%s\x1b[0m`, `\n`);
-    console.log(`\t\t${emoji.get('key')} Private Key: \x1b[32m%s\x1b[0m`, `0x${keyPair.privateKey}\n`);
-    console.log(`\t\t${emoji.get('lock')} Public Key: \x1b[32m%s\x1b[0m`, `0x${keyPair.publicKey}\n`);
+    console.log(`\t\t${emoji.get('key')} Private Key: \x1b[32m%s\x1b[0m`, `${keyPair.privateKey}\n`);
+    console.log(`\t\t${emoji.get('lock')} Public Key: \x1b[32m%s\x1b[0m`, `${keyPair.publicKey}\n`);
 
     return {
         assetAddress,
@@ -80,16 +81,20 @@ const registerAsset = async (assetOwner: IAM): Promise<Partial<{ assetAddress: s
 };
 
 const addAssetInDocument = async (assetOwner: IAM, assetAddress: string, assetPublicKey: string): Promise<boolean> => {
-    const isDIdDocUpdated = await assetOwner.updateDidDocument({
+
+    const assetDid = `did:ethr:${assetAddress}`;
+    const didOptions = {
         didAttribute: DIDAttribute.PublicKey,
-        did: `did:ethr:${assetAddress}`,
+        did: assetDid,
         data: {
             algo: Algorithms.Secp256k1,
             encoding: Encoding.HEX,
             type: PubKeyType.SignatureAuthentication2018,
             value: { tag: "key-1", publicKey: `0x${assetPublicKey}` },
         },
-    });
+    }
+    // Add new key to asset's DID Document
+    const isDIdDocUpdated = await assetOwner.updateDidDocument(didOptions);
 
     return isDIdDocUpdated;
 };
@@ -103,37 +108,37 @@ const connectToBackend = async (iamAgent: IAM, token: string, backendUrl: string
     await axios.post<{ token: string }>(
         `${backendUrl}/login`,
         {
-            data: token,
+            identityToken: token,
         },
         { withCredentials: true }
     );
 }
 
-const createIdentityProofWithDelegate = async (secp256k1PrivateKey: string, rpcUrl: string, identityProofDid: string): Promise<string> => {
+const createIdentityProofWithDelegate = async (secp256k1PrivateKey: string, rpcUrl: string, identityProofDid: string) => {
     const provider = new providers.JsonRpcProvider(rpcUrl);
     const wallet = new Wallet(secp256k1PrivateKey, provider);
 
-    const blockNumber = (await provider.getBlockNumber()).toString();
+    const blockNumber = (await provider.getBlockNumber());
 
-    const payload: { iss: string; claimData: { blockNumber: string }; } = {
-        iss: identityProofDid,
+    const payload = {
         claimData: {
-            blockNumber
-        }
+            blockNumber,
+        },
     };
     const jwt = new JWT(wallet);
-    const identityToken = jwt.sign(payload);
-    return identityToken;
+    const identityToken = await jwt.sign(payload, { issuer: identityProofDid, subject: identityProofDid });
+    return {
+        token: identityToken,
+        payload: payload
+    };
 }
 
 (async () => {
     try {
-        const ownerPrivateKey = '14c4ce13e2ab410ac230f40a803bb2e978feaf6bd847bf0712087189d7493aa1';
-
-        const { iamAgent, connectionInfos } = await connectIAM(ownerPrivateKey);
+        // const ownerPrivateKey = '14c4ce13e2ab410ac230f40a803bb2e978feaf6bd847bf0712087189d7493aa1';
+        const ownerPrivateKey = 'd1d4b30e82c199d4ae0624c237dbfcee889d7ecf1a610b0ce48532013d3fb11b'
+        const assetOwner = await connectIAM(ownerPrivateKey);
         try {
-            const assetOwner = iamAgent;
-
             const { assetAddress, assetPubKey, assetPrivKey } = await registerAsset(assetOwner);
 
             try {
@@ -143,14 +148,11 @@ const createIdentityProofWithDelegate = async (secp256k1PrivateKey: string, rpcU
 
                 try {
                     const assetDid = `did:ethr:${assetAddress}`;
-                    const ownerDid = connectionInfos!.did;
+                    const { token, } = await createIdentityProofWithDelegate(assetPrivKey as string, "https://volta-rpc.energyweb.org", assetDid as string);
 
-                    // Creates an identity token and authenticates as the asset DID to the iam-client-examples backend
-
-                    const assetIdentityToken = await createIdentityProofWithDelegate(assetPrivKey as string, "https://volta-rpc.energyweb.org", ownerDid as string);
-                    if (assetIdentityToken) {
+                    if (token) {
                         try {
-                            await connectToBackend(assetOwner, assetIdentityToken, backendUrl);
+                            await connectToBackend(assetOwner, token, backendUrl);
                         } catch (error) {
                             const err: Error = error as Error;
                             displayError(err, "Loging to Backend")

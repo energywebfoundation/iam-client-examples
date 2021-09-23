@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js"
+    "start": "node index.js",
+    "test:watch": "jest --watchAll"
   },
   "keywords": [],
   "author": "",
@@ -18,5 +19,9 @@
     "passport-did-auth": "^1.0.0-alpha.7",
     "passport-jwt": "^4.0.0",
     "useragent": "^2.3.0"
+  },
+  "devDependencies": {
+    "dotenv": "^10.0.0",
+    "jest": "^27.2.0"
   }
 }
