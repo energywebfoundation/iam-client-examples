@@ -28,7 +28,6 @@ import axios from 'axios';
 import * as emoji from 'node-emoji';
 import { Keys } from '@ew-did-registry/keys';
 import { providers, Wallet } from 'ethers';
-import { InitializeData } from 'iam-client-lib/dist/src/iam';
 import { JWT } from '@ew-did-registry/jwt';
 
 // const backendUrl = 'https://did-auth-demo.energyweb.org';
