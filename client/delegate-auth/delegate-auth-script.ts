@@ -1,19 +1,3 @@
-// In other words, we need to have an example application which does the following:
-
-// Creates an IAM (from iam-client-lib) instance representing an asset owner
-
-// Creates a new asset using iam-client-lib registerAsset()
-
-// Generates a new secp256k1 keypair
-
-// Adds the new key to the assets verification methods (see switchboard-dapp/verification.service.ts at 30aeaa15477709ef8a63504dcc707d81a20ce483 · energywebfoundation/switchboard-dapp  for example for how this is done in Switchboard)
-
-// Creates an IAM instance representing an asset using the private key from generate keypair
-
-// Creates an identity token (or uses token from iam initialization) and authenticates as the asset DID to the iam-client-examples backend
-
-// To start the nodejs “app” could just be a script that runs through the above steps and outputs logs describing what is happening. (It would be awesome if the logs had emojis   )
-
 import {
     IAM,
     Encoding,
@@ -30,7 +14,7 @@ import { Keys } from '@ew-did-registry/keys';
 import { providers, Wallet } from 'ethers';
 import { JWT } from '@ew-did-registry/jwt';
 
-const backendUrl = 'https://did-auth-demo.energyweb.org';
+const backendUrl = 'http://localhost:3333';
 
 const connectIAM = async (privateKey: string): Promise<IAM> => {
 
@@ -101,15 +85,15 @@ const displayError = (err: Error, step: string) => {
     console.log(`${emoji.get('red_circle')} [ ${step} ] : \x1b[31m%s\x1b[0m`, `: ${err}\n`);
 };
 
-const connectToBackend = async (iamAgent: IAM, token: string, backendUrl: string) => {
-    console.log("Connecting Token >> ", token);
-    await axios.post<{ token: string }>(
+const connectToBackend = async (iamAgent: IAM, token: string, backendUrl: string) : Promise<string> => {
+    const response = await axios.post<{ token: string }>(
         `${backendUrl}/login`,
         {
             identityToken: token,
         },
         { withCredentials: true }
     );
+    return response.data.token;
 }
 
 const createIdentityProofWithDelegate = async (secp256k1PrivateKey: string, rpcUrl: string, identityProofDid: string) => {
@@ -125,10 +109,7 @@ const createIdentityProofWithDelegate = async (secp256k1PrivateKey: string, rpcU
     };
     const jwt = new JWT(wallet);
     const identityToken = await jwt.sign(payload, { issuer: identityProofDid, subject: identityProofDid });
-    return {
-        token: identityToken,
-        payload: payload
-    };
+    return identityToken;
 }
 
 (async () => {
@@ -145,14 +126,17 @@ const createIdentityProofWithDelegate = async (secp256k1PrivateKey: string, rpcU
 
                 try {
                     const assetDid = `did:ethr:${assetAddress}`;
-                    const { token, } = await createIdentityProofWithDelegate(assetPrivKey as string, "https://volta-rpc.energyweb.org", assetDid as string);
+                    const identityToken = await createIdentityProofWithDelegate(assetPrivKey as string, "https://volta-rpc.energyweb.org", assetDid as string);
 
-                    if (token) {
+                    if (identityToken) {
                         try {
-                            await connectToBackend(assetOwner, token, backendUrl);
+                            const token = await connectToBackend(assetOwner, identityToken, backendUrl);
+                            console.log(`${emoji.get('large_green_circle')} Delegate asset connected !`) 
+                            console.log(`\n\t${emoji.get('coin')}  Received token : \x1b[32m%s\x1b[0m\n`, token);
+
                         } catch (error) {
                             const err: Error = error as Error;
-                            displayError(err, "Loging to Backend")
+                            displayError(err, "Loging to Backend");
                         }
                     }
                 } catch (error) {
