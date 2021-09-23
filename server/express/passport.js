@@ -1,6 +1,5 @@
 const passport = require('passport');
 const { LoginStrategy } = require('passport-did-auth')
-const fs = require('fs')
 const dotenv = require('dotenv')
 
 const LOGIN_STRATEGY = 'login'
@@ -45,10 +44,6 @@ AYbNmwbyp463E9KMjrbNb0IASujkwvWtfA76yp9epXlJ3FyiUJt95PXlvP26zfuJ
 hQIDAQAB
 -----END PUBLIC KEY-----`
 
-
-
-const jwtSecret = 'secret'
-
 dotenv.config()
 
 const jwtOptions = {
@@ -62,17 +57,15 @@ const jwtOptions = {
     },
   ]),
   ignoreExpiration: false,
-  //secretOrKey: fs.readFileSync('public.pem'),
   secretOrKey: public_pem,
   algorithms: ['RS256'],
 }
 
 module.exports.preparePassport = () => {
   passport.use(new LoginStrategy({
-    //jwtSecret: fs.readFileSync('private.pem'),
     jwtSecret: private_secret,
     jwtSignOptions: {
-      algorithm: 'RS256',
+      algorithm: 'HS256',
     },
     name: LOGIN_STRATEGY,
     rpcUrl: process.env.RPC_URL || 'https://volta-rpc.energyweb.org/',
