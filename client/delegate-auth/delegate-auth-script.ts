@@ -18,8 +18,6 @@ const backendUrl = 'http://localhost:3333';
 
 const connectIAM = async (privateKey: string): Promise<IAM> => {
 
-    let connectionInfos = undefined;
-
     const iamAgent: IAM = new IAM({
         rpcUrl: "https://volta-rpc.energyweb.org",
         privateKey,
@@ -31,7 +29,7 @@ const connectIAM = async (privateKey: string): Promise<IAM> => {
     setChainConfig(73799, {
         rpcUrl: "https://volta-rpc.energyweb.org"
     });
-    connectionInfos = await iamAgent.initializeConnection({
+    const connectionInfos = await iamAgent.initializeConnection({
         walletProvider: WalletProvider.WalletConnect,
         initCacheServer: true,
         createDocument: true,
@@ -62,7 +60,7 @@ const registerAsset = async (assetOwner: IAM): Promise<Partial<{ assetAddress: s
     };
 };
 
-const addAssetInDocument = async (assetOwner: IAM, assetAddress: string, assetPublicKey: string): Promise<boolean> => {
+const addKeyToAssetDocument = async (assetOwner: IAM, assetAddress: string, assetPublicKey: string): Promise<boolean> => {
 
     const assetDid = `did:ethr:${assetAddress}`;
     const didOptions = {
@@ -121,8 +119,8 @@ const createIdentityProofWithDelegate = async (secp256k1PrivateKey: string, rpcU
 
             try {
                 // Adding the new key to the assets verification methods
-                const isDIdDocUpdated = await addAssetInDocument(assetOwner, assetAddress!, assetPubKey!);
-                console.log(`${emoji.get('large_green_circle')} Asset added to DID: \x1b[32m%s\x1b[0m\n`, isDIdDocUpdated);
+                const isDIdDocUpdated = await addKeyToAssetDocument(assetOwner, assetAddress!, assetPubKey!);
+                console.log(`${emoji.get('large_green_circle')} Key added to Asset's DID: \x1b[32m%s\x1b[0m\n`, isDIdDocUpdated);
 
                 try {
                     const assetDid = `did:ethr:${assetAddress}`;
@@ -132,7 +130,7 @@ const createIdentityProofWithDelegate = async (secp256k1PrivateKey: string, rpcU
                         try {
                             const token = await connectToBackend(assetOwner, identityToken, backendUrl);
                             console.log(`${emoji.get('large_green_circle')} Delegate asset connected !`) 
-                            console.log(`\n\t${emoji.get('coin')}  Received token : \x1b[32m%s\x1b[0m\n`, token);
+                            console.log(`\n\t${emoji.get('memo')}  Received token : \x1b[32m%s\x1b[0m\n`, token);
 
                         } catch (error) {
                             const err: Error = error as Error;
@@ -143,11 +141,9 @@ const createIdentityProofWithDelegate = async (secp256k1PrivateKey: string, rpcU
                     const err: Error = error as Error
                     displayError(err, "Connecting IAM instance");
                 }
-            }
-            catch (error) {
+            } catch (error) {
                 const err: Error = error as Error
                 displayError(err, "UpdateDocument");
-
             }
         } catch (error) {
             const err: Error = error as Error
