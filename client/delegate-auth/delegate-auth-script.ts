@@ -8,27 +8,34 @@ import {
     WalletProvider,
     setCacheClientOptions,
 } from 'iam-client-lib';
+
+import {
+    rpcUrl,
+    chainId,
+    backendUrl,
+    cacheServerUrl,
+} from './config';
+
 import axios from 'axios';
 import * as emoji from 'node-emoji';
 import { Keys } from '@ew-did-registry/keys';
 import { providers, Wallet } from 'ethers';
 import { JWT } from '@ew-did-registry/jwt';
 
-const backendUrl = 'http://localhost:3333';
-
 const connectIAM = async (privateKey: string): Promise<IAM> => {
 
     const iamAgent: IAM = new IAM({
-        rpcUrl: "https://volta-rpc.energyweb.org",
+        rpcUrl,
         privateKey,
     });
-    setCacheClientOptions(73799, {
-        url: "https://identitycache-dev.energyweb.org/v1",
+    setCacheClientOptions(chainId, {
+        url: cacheServerUrl
     });
 
-    setChainConfig(73799, {
-        rpcUrl: "https://volta-rpc.energyweb.org"
+    setChainConfig(chainId, {
+        rpcUrl
     });
+    
     const connectionInfos = await iamAgent.initializeConnection({
         walletProvider: WalletProvider.WalletConnect,
         initCacheServer: true,

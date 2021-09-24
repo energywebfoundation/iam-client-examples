@@ -4,7 +4,7 @@
   "description": "Sample example of a nodejs application which authenticates to the example server examples with a key which is not the owner of the DID but is a authentication delegate of the DID.",
   "main": "delegate-auth.js",
   "scripts": {
-    "script1": "ts-node delegate-auth-script.ts"
+    "start": "ts-node delegate-auth-script.ts"
   },
   "author": "",
   "license": "ISC",
