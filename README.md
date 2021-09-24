@@ -17,7 +17,7 @@ This tutorial demonstrates the use of a web client to authenticate to a server u
 - Complete general [example prequisites](prerequisites) 
 - Access to a wallet account whose Volta DID Document has a role claim (corresponding to a Switchboard role)
 
-### 1. Run the client application
+### 1. Run the react client application
 1. Navigate to the React client example: `cd client/react-dapp`
 2. Edit the backend url in `src/config.ts` to `http://localhost:3333`
 3. Install the dependencies: `npm install`
@@ -57,15 +57,21 @@ The client examples can be configured by editing their configuration files:
 - React configuration file is at `client/react-dapp/src/config.ts`
 - Vue configuration file is at `client/vue-dapp/src/config.ts`
 - Angular configuration file is at `client/angular-dapp/src/environments/environment.ts`
+- Delegate authentication configuration file is at `client/delegate-auth/config.ts` (make sure you followed the step 2 `Setup the server application` or adapt `backendUrl` to reference a hosted backed)
 
 The following properties can be configured:
 - `backendUrl`: This is the URL of the authentication provider server application. The client examples are configured by default to communicate with a hosted backend.
 - `enrolmentUrl`: Optional. If set, an enrolment link will be provided to users. If not set, no enrolment link is shown to users.
 
+##### for delegate-auth example, if needed, you can set/change those additional properties:
+- `chainId`
+- `rpcUrl`
+- `cacheServerUrl`
+
 #### Running
 To run the client examples, please follow below steps:
 
-1. Navigate to the app that you want to run: `cd client/angular-dapp` or `cd client/react-dapp` or `cd client/vue-dapp`
+1. Navigate to the app that you want to run: `cd client/angular-dapp` or `cd client/react-dapp` or `cd client/vue-dapp` or `cd client/delegate-auth`
 2. Install dependencies: `npm install`
 3. Run application: `npm start`
 
