@@ -1,0 +1,17 @@
+{
+  "name": "jwt-authentication",
+  "version": "1.0.0",
+  "description": "Example of using JWT to authenticate into passport-did-auth from an app with a private key\" into examples folder",
+  "main": "jwt-login.ts",
+  "scripts": {
+    "start": "ts-node jwt-login.ts"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^0.21.4",
+    "ethers": "^5.4.7",
+    "ts-node": "^10.2.1",
+    "typescript": "^4.4.3"
+  }
+}
