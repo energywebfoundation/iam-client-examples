@@ -111,17 +111,13 @@ passport.use(new LoginStrategy(loginStrategyOption));
 
 `<YourToken>` refers to the proof token you can get from various ways depnding on your usecase. You can either:
 
-<details>
-    <summary>Manually generate your token</summary>
+>Manually generate your token
 
      You may want to generate your claim token manually. You can refer to the example demonstrated in the jwt-login example, in which the function `generate-identity` shows how this token generation is made.
-</details>
-or
-<details>
-    <summary>Use iam-client-lib</summary>
+Or
+>Use iam-client-lib
     
     iam-client-lib contains some functions that can be used to get a proof token  `createIdentityProof`, `createPublicClaim `
-</details>
 
 ***
 
