@@ -79,25 +79,48 @@ A user must have at least one of the listed roles. If not provided, role claims 
 ***
 
 >### **💡  How to construct the `payload` to send to the backend for login**
-In order to authenticate with passport-did-auth, the data payload has to be formated the following way :
+In order to authenticate with passport-did-auth, the data payload has to be an object formated the following way :
 
-```
+```javascript
  {
    identityToken: <YourToken>  
  }
 ``` 
+By default, the key of the token has to be `identityToken` in order for your claim to be correctly parsed on login. If you'd like to change this label, on your backend, make sure to set the `claimField` field of your [loginStrategy]() accordingly when you create and [configue your loginStrategy](https://github.com/energywebfoundation/passport-did-auth/blob/develop/docs/guides/authExpress.md). For example, if you want to call this field `myIdentityTokenField` instead of `identityToken` you have to:
+* format your payload :
+
+```javaScript
+{
+  myIdentityTokenField: <YourToken>
+}
+```
+* set your loginStrategy
+
+```javascript
+//set the claimField param to your field's name
+const loginStrategyOption = {
+  claimField: 'myIdentityTokenField',
+  jwtSecret: 'secret',
+  name: 'login',
+  rpcUrl: 'https://volta-rpc.energyweb.org/v1',
+  cacheServerUrl: 'http://13.52.78.249:3333/',
+}
+
+passport.use(new LoginStrategy(loginStrategyOption));
+```
+
 `<YourToken>` refers to the proof token you can get from various ways depnding on your usecase. You can either:
 
 <details>
-    <summary>Generate your token</summary>
+    <summary>Manually generate your token</summary>
 
-     You may want to generate your claim token manually. You can refer to the example demonstrated in the jwt-login example.
+     You may want to generate your claim token manually. You can refer to the example demonstrated in the jwt-login example, in which the function `generate-identity` shows how this token generation is made.
 </details>
-
+or
 <details>
     <summary>Use iam-client-lib</summary>
     
-    iam-client-lib contains some functions that can be used to get a proof token  `createIdentityProof`, `createPublicClaim `)
+    iam-client-lib contains some functions that can be used to get a proof token  `createIdentityProof`, `createPublicClaim `
 </details>
 
 ***
