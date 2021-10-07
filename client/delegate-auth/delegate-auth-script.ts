@@ -102,22 +102,6 @@ const connectToBackend = async (token: string, backendUrl: string) : Promise<str
     return response.data.token;
 }
 
-const createIdentityProofWithDelegate = async (secp256k1PrivateKey: string, rpcUrl: string, identityProofDid: string) => {
-    const provider = new providers.JsonRpcProvider(rpcUrl);
-    const wallet = new Wallet(secp256k1PrivateKey, provider);
-
-    const blockNumber = (await provider.getBlockNumber());
-
-    const payload = {
-        claimData: {
-            blockNumber,
-        },
-    };
-    const jwt = new JWT(wallet);
-    const identityToken = await jwt.sign(payload, { issuer: identityProofDid, subject: identityProofDid });
-    return identityToken;
-}
-
 (async () => {
     try {
         const assetOwner = await connectIAM(ownerPrivateKey);
@@ -131,8 +115,8 @@ const createIdentityProofWithDelegate = async (secp256k1PrivateKey: string, rpcU
 
                 try {
                     const assetDid = `did:ethr:${assetAddress}`;
-                    
-                    const identityToken = await createIdentityProofWithDelegate(
+
+                    const identityToken = await assetOwner.createDelegateProof(
                         assetPrivKey as string,
                         "https://volta-rpc.energyweb.org",
                         assetDid as string,
