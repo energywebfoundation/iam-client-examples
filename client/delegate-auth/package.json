@@ -11,15 +11,13 @@
   "dependencies": {
     "@ew-did-registry/jwt": "^0.5.2-alpha.90.0",
     "@ew-did-registry/keys": "^0.5.2-alpha.90.0",
+    "@types/node-emoji": "^1.8.1",
     "axios": "^0.21.4",
+    "dotenv": "^10.0.0",
     "ethers": "^5.4.6",
-    "iam-client-lib": "^3.1.0-alpha.13",
+    "iam-client-lib": "^3.0.0",
     "node-emoji": "^1.11.0",
     "ts-node": "^10.2.1",
     "typescript": "^4.4.2"
-  },
-  "devDependencies": {
-    "@types/node-emoji": "^1.8.1",
-    "jest": "^27.2.1"
   }
 }
