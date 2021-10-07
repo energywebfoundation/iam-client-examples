@@ -11,3 +11,4 @@ compiled
 ethers
 site
 .vscode
+.env
