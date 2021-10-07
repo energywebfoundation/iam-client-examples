@@ -47,7 +47,7 @@ This tutorial demonstrates the use of a web client to authenticate to a server u
 ## Running the examples
 
 ### Prerequisites
-- Make sure to have Node.js (>= v14) installed.
+- Make sure to have Node.js (>= v16) installed.
 - Clone this Git repository.
 
 ### Running the client examples
