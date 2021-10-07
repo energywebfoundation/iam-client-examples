@@ -131,7 +131,7 @@ const createIdentityProofWithDelegate = async (secp256k1PrivateKey: string, rpcU
 
                 try {
                     const assetDid = `did:ethr:${assetAddress}`;
-                    const identityToken = await createIdentityProofWithDelegate(assetPrivKey as string, "https://volta-rpc.energyweb.org", assetDid as string);
+                    const identityToken = await assetOwner.createDelegateProof(assetPrivKey as string, "https://volta-rpc.energyweb.org", assetDid as string);
 
                     if (identityToken) {
                         try {
