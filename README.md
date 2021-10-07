@@ -87,6 +87,51 @@ The server examples can be configured via environment variables:
 - `ACCEPTED_ROLES`: Optional. A list of comma separated role claims. Example: "user.roles.flex.apps.energyweb.iam.ewc,admin.roles.flex.apps.energyweb.iam.ewc".
 A user must have at least one of the listed roles. If not provided, role claims are verified but no check for a specific role is performed.
 
+***
+
+>### **💡  How to construct the `payload` to send to the backend for login**
+In order to authenticate with passport-did-auth, the data payload has to be an object formated the following way :
+
+```javascript
+ {
+   identityToken: <YourToken>  
+ }
+``` 
+By default, the key of the token has to be `identityToken` in order for your claim to be correctly parsed on login. If you'd like to change this label, on your backend, make sure to set the `claimField` field of your [loginStrategy]() accordingly when you create and [configue your loginStrategy](https://github.com/energywebfoundation/passport-did-auth/blob/develop/docs/guides/authExpress.md). For example, if you want to call this field `myIdentityTokenField` instead of `identityToken` you have to:
+* format your payload :
+
+```javaScript
+{
+  myIdentityTokenField: <YourToken>
+}
+```
+* set your loginStrategy
+
+```javascript
+//set the claimField param to your field's name
+const loginStrategyOption = {
+  claimField: 'myIdentityTokenField',
+  jwtSecret: 'secret',
+  name: 'login',
+  rpcUrl: 'https://volta-rpc.energyweb.org/v1',
+  cacheServerUrl: 'http://13.52.78.249:3333/',
+}
+
+passport.use(new LoginStrategy(loginStrategyOption));
+```
+
+`<YourToken>` refers to the proof token you can get from various ways depnding on your usecase. You can either:
+
+* Manually generate your token
+
+>You may want to generate your claim token manually. You can refer to the example demonstrated in the jwt-login example, in which the function `generate-identity` shows how this token generation is made.
+Or
+* Use iam-client-lib
+    
+>iam-client-lib contains some functions that can be used to get a proof token  `createIdentityProof`, `createPublicClaim `
+
+***
+
 ## License
 
 This project is licensed under the GNU General Public License v3.0 or later - see the [LICENSE](LICENSE) file for details
