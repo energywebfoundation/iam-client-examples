@@ -19,13 +19,11 @@ app.use(cookieParser());
 
 app.post("/login", passport.authenticate(LOGIN_STRATEGY), (req, res) => {
   const isProduction = process.env.NODE_ENV === "production";
-
   const cookiesOptions = isProduction
     ? getCookiesOptionBasedOnUserAgent(req.headers["user-agent"] | "")
     : { httpOnly: true };
 
   res.cookie("auth", req.user, cookiesOptions);
-
   return res.send({ token: req.user });
 });
 
@@ -51,3 +49,5 @@ app.get("/login-status", passport.authenticate("jwt"), (req, res) => {
 app.listen(3333, () => {
   console.log("App is ready and listening on port 3333");
 });
+
+module.exports = app;

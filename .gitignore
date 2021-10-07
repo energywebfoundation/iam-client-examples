@@ -3,7 +3,6 @@ coverage
 .nyc_output
 .DS_Store
 *.log
-.vscode
 .idea
 dist
 compiled
@@ -12,4 +11,5 @@ compiled
 ethers
 site
 settings.json
+.vscode
 .env
