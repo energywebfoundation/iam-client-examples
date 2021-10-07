@@ -11,3 +11,5 @@ compiled
 .rpt2_cache
 ethers
 site
+settings.json
+.env
