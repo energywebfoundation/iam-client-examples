@@ -63,10 +63,15 @@ The following properties can be configured:
 - `backendUrl`: This is the URL of the authentication provider server application. The client examples are configured by default to communicate with a hosted backend.
 - `enrolmentUrl`: Optional. If set, an enrolment link will be provided to users. If not set, no enrolment link is shown to users.
 
-##### for delegate-auth example, if needed, you can set/change those additional properties:
-- `chainId`
-- `rpcUrl`
-- `cacheServerUrl`
+##### for delegate-auth example, some additional settings can be necessary :
+- `chainId` : network id of the blockchain used. To connect to volta testnet, set this value to `73799`.
+- `rpcUrl` : url of the RPC connection (ex: `https://volta-rpc.energyweb.org` for volta)
+- `cacheServerUrl` : url of the cache server (ex: `https://identitycache-dev.energyweb.org/v1`)
+- `ownerPrivateKey` : private key of identity owner. If you set this value in a `.env` file, set the variable to be `PRIVATE_KEY` 
+##### in .env 
+```javascript
+PRIVATE_KEY = <Your private key>
+```
 
 #### Running
 To run the client examples, please follow below steps:
