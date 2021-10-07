@@ -38,7 +38,7 @@ const connectIAM = async (privateKey: string): Promise<IAM> => {
     });
     
     const connectionInfos = await iamAgent.initializeConnection({
-        walletProvider: WalletProvider.WalletConnect,
+        walletProvider: WalletProvider.PrivateKey,
         initCacheServer: true,
         createDocument: true,
     });
