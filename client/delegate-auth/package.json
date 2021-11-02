@@ -1,0 +1,23 @@
+{
+  "name": "delegate-auth",
+  "version": "1.0.0",
+  "description": "Sample example of a nodejs application which authenticates to the example server examples with a key which is not the owner of the DID but is a authentication delegate of the DID.",
+  "main": "delegate-auth.js",
+  "scripts": {
+    "start": "ts-node delegate-auth-script.ts"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@ew-did-registry/jwt": "^0.5.2-alpha.90.0",
+    "@ew-did-registry/keys": "^0.5.2-alpha.90.0",
+    "@types/node-emoji": "^1.8.1",
+    "axios": "^0.21.4",
+    "dotenv": "^10.0.0",
+    "ethers": "^5.4.6",
+    "iam-client-lib": "^3.1.0-alpha.16",
+    "node-emoji": "^1.11.0",
+    "ts-node": "^10.2.1",
+    "typescript": "^4.4.2"
+  }
+}
