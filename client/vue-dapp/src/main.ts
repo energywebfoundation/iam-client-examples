@@ -1,24 +1,20 @@
-import Vue from 'vue'
-import App from './App.vue'
-import {
-  IAM,
-  setCacheClientOptions,
-  setChainConfig,
-} from "iam-client-lib"
+import Vue from "vue";
+import App from "./App.vue";
+import { setCacheConfig, setChainConfig } from "iam-client-lib";
+import { config } from "./config";
 
-Vue.config.productionTip = false
+Vue.config.productionTip = false;
 Vue.use({
   install: () => {
-    setCacheClientOptions(73799, {
-      url: "https://volta-identitycache.energyweb.org/",
+    setCacheConfig(config.chainId, {
+      url: config.cacheServerUrl,
     });
-    setChainConfig(73799, {
-      rpcUrl: "https://volta-rpc.energyweb.org",
+    setChainConfig(config.chainId, {
+      rpcUrl: config.chainRpcUrl,
     });
-    Vue.prototype.$IAM = new IAM()
   },
-})
+});
 
 new Vue({
-  render: (h) => h(App),
-}).$mount('#app')
+  render: (h) => h(App)
+}).$mount("#app");

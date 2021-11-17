@@ -58,20 +58,17 @@
       </div>
       <div class="container">
         <button
-          @click="login({ walletProvider: 'WalletConnect' })"
+          @click="login({ providerType: 'WalletConnect' })"
           class="button"
         >
           <img class="walletconnect" src="../assets/wallet-connect-icon.svg" />
           <span>Login with Wallet Connect</span>
         </button>
-        <button @click="login({ walletProvider: 'MetaMask' })" class="button">
+        <button @click="login({ providerType: 'MetaMask' })" class="button">
           <img class="metamask" src="../assets/metamask-logo.svg" />
           <span>Login with Metamask</span>
         </button>
-        <button
-          @click="login({ walletProvider: 'EwKeyManager' })"
-          class="button"
-        >
+        <button @click="login({ providerType: 'EwKeyManager' })" class="button">
           <img class="metamask" src="../assets/key-manager-icon.svg" />
           <span>Login with EW Key Manager</span>
         </button>
@@ -85,7 +82,14 @@ import Vue from "vue";
 import Spinner from "./Spinner.vue";
 import axios from "axios";
 import { config } from "../config";
-import { WalletProvider } from "iam-client-lib";
+import {
+  initWithEKC,
+  initWithKms,
+  initWithMetamask,
+  initWithWalletConnect,
+  ProviderType,
+  SignerService,
+} from "iam-client-lib";
 
 type Role = {
   name: string;
@@ -100,6 +104,7 @@ export default Vue.extend({
   data: function(): {
     isLoading: boolean;
     errored: boolean;
+    signerService?: SignerService;
     unauthorized: boolean;
     did?: string;
     roles: Role[] | [];
@@ -109,6 +114,7 @@ export default Vue.extend({
       isLoading: false,
       errored: false,
       unauthorized: false,
+      signerService: undefined,
       did: localStorage.did,
       roles: localStorage.roles ? JSON.parse(localStorage.roles) : [],
       enrolmentUrl: config.enrolmentUrl
@@ -137,27 +143,41 @@ export default Vue.extend({
     loginStatus();
   },
   methods: {
-    login: async function({
-      walletProvider,
-    }: {
-      walletProvider: WalletProvider;
-    }) {
+    initSignerService: async function(providerType: ProviderType) {
+      switch (providerType) {
+        case ProviderType.MetaMask:
+          return initWithMetamask();
+        case ProviderType.WalletConnect:
+          return initWithWalletConnect();
+        case ProviderType.EwKeyManager:
+          return initWithKms();
+        case ProviderType.EKC:
+          return initWithEKC();
+        default:
+          throw new Error(`no handler for provider '${providerType}'`);
+      }
+    },
+
+    login: async function({ providerType }: { providerType: ProviderType }) {
       this.isLoading = true;
       this.errored = false;
       this.unauthorized = false;
       try {
-        const { did, identityToken } = await this.$IAM.initializeConnection({
-          walletProvider,
-        });
-        if (did) {
-          this.did = did;
-          localStorage.setItem("did", did);
-        }
+        this.signerService = (
+          await this.initSignerService(providerType)
+        ).signerService;
+        this.did = this.signerService.did;
+        localStorage.setItem("did", this.signerService.did);
 
+        const {
+          identityToken,
+        } = await await this.signerService.publicKeyAndIdentityToken();
         if (identityToken) {
           await axios.post(
             `${config.backendUrl}/login`,
-            { identityToken },
+            {
+              identityToken,
+            },
             { withCredentials: true }
           );
         }
@@ -182,7 +202,7 @@ export default Vue.extend({
       this.isLoading = false;
     },
     logout: async function() {
-      await this.$IAM.closeConnection();
+      this.signerService && this.signerService.closeConnection();
       this.did = "";
       localStorage.clear();
     },

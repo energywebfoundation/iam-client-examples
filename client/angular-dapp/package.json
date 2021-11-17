@@ -21,7 +21,7 @@
     "@angular/platform-browser-dynamic": "~10.1.1",
     "@angular/router": "~10.1.1",
     "axios": "^0.21.1",
-    "iam-client-lib": "3.0.0-alpha.6",
+    "iam-client-lib": "^3.3.0-alpha.10",
     "rxjs": "~6.6.0",
     "tslib": "^2.0.0",
     "zone.js": "~0.10.2"

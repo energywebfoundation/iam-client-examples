@@ -5,7 +5,10 @@
 export const environment = {
   production: false,
   ENROLMENT_URL: '',
-  BACKEND_URL: 'https://did-auth-demo.energyweb.org',
+  BACKEND_URL: 'http://localhost:3333',
+  CACHE_SERVER_URL: 'https://identitycache-dev.energyweb.org/v1',
+  VOLTA_RPC_URL: "https://volta-rpc-vkn5r5zx4ke71f9hcu0c.energyweb.org/",
+  VOLTA_CHAIN_ID: 73799,
 };
 
 /*
