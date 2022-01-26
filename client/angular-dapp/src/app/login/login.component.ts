@@ -61,8 +61,6 @@ export class LoginComponent {
         return initWithMetamask();
       case ProviderType.WalletConnect:
         return initWithWalletConnect();
-      case ProviderType.EwKeyManager:
-        return initWithKms();
       case ProviderType.EKC:
         return initWithEKC();
       default:

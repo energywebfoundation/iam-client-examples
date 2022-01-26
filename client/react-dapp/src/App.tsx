@@ -75,9 +75,6 @@ function App() {
         return initWithMetamask();
       case ProviderType.WalletConnect:
         return initWithWalletConnect();
-      case ProviderType.EwKeyManager:
-        return initWithKms();
-
       case ProviderType.PrivateKey:
         return initWithPrivateKeySigner(
           localStorage.getItem("PrivateKey") as string,

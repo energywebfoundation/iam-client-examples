@@ -10,6 +10,6 @@ export const config: {
   backendUrl: "http://localhost:3333",
   enrolmentUrl: "",
   cacheServerUrl: "https://volta-identitycache.energyweb.org/v1",
-  chainRpcUrl: "https://volta-rpc-vkn5r5zx4ke71f9hcu0c.energyweb.org/",
+  chainRpcUrl: "https://volta-rpc.energyweb.org/",
   chainId: VOLTA_CHAIN_ID,
 };
