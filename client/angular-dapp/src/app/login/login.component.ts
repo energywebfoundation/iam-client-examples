@@ -2,7 +2,13 @@ import { Component } from '@angular/core';
 import axios from 'axios';
 import { IamService } from '../iam.service';
 import { environment } from '../../environments/environment';
-import { WalletProvider } from 'iam-client-lib';
+import {
+  initWithEKC,
+  initWithMetamask,
+  initWithWalletConnect,
+  ProviderType,
+  SignerService
+} from 'iam-client-lib';
 
 type Role = {
   name: string;
@@ -12,14 +18,15 @@ type Role = {
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
-  styleUrls: ['./login.component.css'],
+  styleUrls: ['./login.component.css']
 })
 export class LoginComponent {
   constructor(private readonly iamService: IamService) {}
-  providers = WalletProvider;
+  providers = ProviderType;
   isLoading = false;
   errored = false;
   unauthorized = false;
+  signerService: SignerService = null;
   did: string = localStorage.getItem('did');
   enrolmentURL = environment.ENROLMENT_URL
     ? `${environment.ENROLMENT_URL}&returnUrl=${encodeURIComponent(
@@ -32,7 +39,7 @@ export class LoginComponent {
     const loginStatus = async () => {
       try {
         const res = await axios.get(`${environment.BACKEND_URL}/login-status`, {
-          withCredentials: true,
+          withCredentials: true
         });
         const { loginStatus } = res.data;
         if (!loginStatus) {
@@ -47,26 +54,36 @@ export class LoginComponent {
     loginStatus();
   }
 
-  async login({ walletProvider }: { walletProvider: WalletProvider }) {
+  initSignerService = async function(providerType: ProviderType) {
+    switch (providerType) {
+      case ProviderType.MetaMask:
+        return initWithMetamask();
+      case ProviderType.WalletConnect:
+        return initWithWalletConnect();
+      case ProviderType.EKC:
+        return initWithEKC();
+      default:
+        throw new Error(`no handler for provider '${providerType}'`);
+    }
+  };
+
+  async login({ providerType }: { providerType: ProviderType }) {
     this.isLoading = true;
     this.errored = false;
     this.unauthorized = false;
     try {
-      const { identityToken, did } =
-        await this.iamService.iam.initializeConnection({
-          walletProvider,
-        });
-
-      if (did) {
-        this.did = did;
-        localStorage.setItem('did', did);
-      }
-
+      this.signerService = await (await this.initSignerService(providerType))
+        .signerService;
+      this.did = this.signerService.did;
+      localStorage.setItem('did', this.signerService.did);
+      let {
+        identityToken
+      } = await await this.signerService.publicKeyAndIdentityToken();
       if (identityToken) {
         await axios.post(
           `${environment.BACKEND_URL}/login`,
           {
-            identityToken,
+            identityToken
           },
           { withCredentials: true }
         );
@@ -91,7 +108,7 @@ export class LoginComponent {
   }
 
   async logout() {
-    await this.iamService.iam.closeConnection();
+    this.signerService && (await this.signerService.closeConnection());
     this.did = '';
     localStorage.clear();
   }

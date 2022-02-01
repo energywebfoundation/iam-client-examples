@@ -1,20 +1,17 @@
 import { Injectable } from '@angular/core';
-import { setCacheClientOptions, setChainConfig, IAM } from 'iam-client-lib';
+import { setCacheConfig, setChainConfig } from 'iam-client-lib';
+import { environment } from '../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class IamService {
-  readonly iam: IAM;
-
   constructor() {
-    const VOLTA_CHAIN_ID = 73799;
-    setCacheClientOptions(VOLTA_CHAIN_ID, {
-      url: "https://volta-identitycache.energyweb.org/",
+    setCacheConfig(environment.VOLTA_CHAIN_ID, {
+      url: environment.CACHE_SERVER_URL
     });
-    setChainConfig(VOLTA_CHAIN_ID, {
-      rpcUrl: "https://volta-rpc.energyweb.org",
+    setChainConfig(environment.VOLTA_CHAIN_ID, {
+      rpcUrl: environment.VOLTA_RPC_URL
     });
-    this.iam = new IAM();
   }
 }

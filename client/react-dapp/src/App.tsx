@@ -1,16 +1,21 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { config } from "./config";
+
 import {
-  IAM,
-  setCacheClientOptions,
+  initWithEKC,
+  initWithGnosis,
+  initWithMetamask,
+  initWithPrivateKeySigner,
+  initWithWalletConnect,
+  ProviderType,
+  setCacheConfig,
   setChainConfig,
-  WalletProvider,
+  SignerService,
 } from "iam-client-lib";
 
 import Spinner from "./components/Spinner";
 import SourceCode from "./components/SourceCode";
-
-import { config } from "./config";
 
 import metamaskLogo from "./assets/metamask-logo.svg";
 import logo from "./assets/logo.svg";
@@ -19,14 +24,12 @@ import walletconnectIcon from "./assets/wallet-connect-icon.svg";
 
 import "./App.css";
 import "./Login.css";
+import { safeAppSdk } from "./gnosis.safe.service";
 
-setCacheClientOptions(73799, {
-  url: "https://volta-identitycache.energyweb.org/",
-});
-setChainConfig(73799, {
-  rpcUrl: "https://volta-rpc.energyweb.org",
-});
-const iam = new IAM();
+const { chainRpcUrl, chainId, cacheServerUrl } = config;
+
+setCacheConfig(chainId, { url: cacheServerUrl });
+setChainConfig(chainId, { rpcUrl: chainRpcUrl });
 
 type Role = {
   name: string;
@@ -34,6 +37,8 @@ type Role = {
 };
 
 function App() {
+  let signerService: SignerService;
+
   const userRoles = localStorage.getItem("roles");
   const userDID = localStorage.getItem("did") || "";
   const roles = userRoles ? (JSON.parse(userRoles) as Role[]) : [];
@@ -53,7 +58,8 @@ function App() {
           logout();
         }
       } catch (err) {
-        if (err?.response?.status === 401) {
+        let httpErr = err as { response?: { status: number } };
+        if (httpErr?.response?.status === 401) {
           logout();
         }
       }
@@ -62,21 +68,42 @@ function App() {
     loginStatus();
   });
 
-  const login = async function (initOptions?: {
-    walletProvider: WalletProvider;
+  const initSignerService = async function(providerType: ProviderType) {
+    switch (providerType) {
+      case ProviderType.MetaMask:
+        return initWithMetamask();
+      case ProviderType.WalletConnect:
+        return initWithWalletConnect();
+      case ProviderType.PrivateKey:
+        return initWithPrivateKeySigner(
+          localStorage.getItem("PrivateKey") as string,
+          chainRpcUrl
+        );
+      case ProviderType.Gnosis:
+        return initWithGnosis(safeAppSdk);
+      case ProviderType.EKC:
+        return initWithEKC();
+      default:
+        throw new Error(`no handler for provider '${providerType}'`);
+    }
+  };
+
+  const login = async function({
+    providerType,
+  }: {
+    providerType: ProviderType;
   }) {
     setLoading(true);
     setErrored(false);
     setUnauthorized(false);
     try {
-      const { identityToken, did } = await iam.initializeConnection(
-        initOptions
-      );
-
-      if (did) {
-        setDID(did);
-        localStorage.setItem("did", did);
-      }
+      const { signerService } = await initSignerService(providerType);
+      console.log("LOGGING IN ", signerService.did);
+      setDID(signerService.did);
+      localStorage.setItem("did", signerService.did);
+      let {
+        identityToken,
+      } = await await signerService.publicKeyAndIdentityToken();
       if (identityToken) {
         await axios.post<{ token: string }>(
           `${config.backendUrl}/login`,
@@ -93,7 +120,8 @@ function App() {
       );
       localStorage.setItem("roles", JSON.stringify(roles));
     } catch (err) {
-      if (err?.response?.status === 401) {
+      let httpErr = err as { response?: { status: number } };
+      if (httpErr?.response?.status === 401) {
         setUnauthorized(true);
       }
       setErrored(true);
@@ -101,8 +129,9 @@ function App() {
     setLoading(false);
   };
 
-  const logout = async function () {
-    await iam.closeConnection();
+  const logout = async function() {
+    console.log("LOGGING OUT");
+    signerService && (await signerService.closeConnection());
     setDID("");
     localStorage.clear();
   };
@@ -162,7 +191,7 @@ function App() {
       <button
         className="button"
         onClick={async () =>
-          await login({ walletProvider: WalletProvider.WalletConnect })
+          await login({ providerType: ProviderType.WalletConnect })
         }
       >
         <img
@@ -175,7 +204,7 @@ function App() {
       <button
         className="button"
         onClick={async () =>
-          await login({ walletProvider: WalletProvider.MetaMask })
+          await login({ providerType: ProviderType.MetaMask })
         }
       >
         <img alt="metamask logo" className="metamask" src={metamaskLogo} />
@@ -184,7 +213,7 @@ function App() {
       <button
         className="button"
         onClick={async () =>
-          await login({ walletProvider: WalletProvider.EwKeyManager })
+          await login({ providerType: ProviderType.EwKeyManager })
         }
       >
         <img alt="metamask logo" className="metamask" src={KMLogo} />

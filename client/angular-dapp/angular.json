@@ -19,6 +19,16 @@
             "polyfills": "src/polyfills.ts",
             "tsConfig": "tsconfig.app.json",
             "aot": true,
+            "allowedCommonJsDependencies": [
+              "iam-client-lib",
+              "axios",
+              "@walletconnect/window-metadata",
+              "@walletconnect/encoding",
+              "@walletconnect/environment",
+              "@walletconnect/socket-transport",
+              "bn.js",
+              "query-string"
+            ],
             "assets": [
               "src/favicon.ico",
               "src/assets"

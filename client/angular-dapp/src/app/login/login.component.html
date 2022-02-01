@@ -56,21 +56,21 @@
       </div>
       <div class="container">
         <button
-          (click)="login({ walletProvider: providers.WalletConnect })"
+          (click)="login({ providerType: providers.WalletConnect })"
           class="button"
         >
           <img class="walletconnect" src="./assets/wallet-connect-icon.svg" />
           <span>Login with Wallet Connect</span>
         </button>
         <button
-          (click)="login({ walletProvider: providers.MetaMask })"
+          (click)="login({ providerType: providers.MetaMask })"
           class="button"
         >
           <img class="metamask" src="./assets/metamask-logo.svg" />
           <span>Login with Metamask</span>
         </button>
         <button
-          (click)="login({ walletProvider: providers.EwKeyManager })"
+          (click)="login({ providerType: providers.EwKeyManager })"
           class="button"
         >
           <img class="metamask" src="./assets/key-manager-icon.svg" />
