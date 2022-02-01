@@ -4,7 +4,6 @@ import { IamService } from '../iam.service';
 import { environment } from '../../environments/environment';
 import {
   initWithEKC,
-  initWithKms,
   initWithMetamask,
   initWithWalletConnect,
   ProviderType,

@@ -5,7 +5,6 @@ import { config } from "./config";
 import {
   initWithEKC,
   initWithGnosis,
-  initWithKms,
   initWithMetamask,
   initWithPrivateKeySigner,
   initWithWalletConnect,
