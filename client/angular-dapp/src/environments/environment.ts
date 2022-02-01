@@ -6,8 +6,8 @@ export const environment = {
   production: false,
   ENROLMENT_URL: '',
   BACKEND_URL: 'http://localhost:3333',
-  CACHE_SERVER_URL: 'https://identitycache-dev.energyweb.org/v1',
-  VOLTA_RPC_URL: "https://volta-rpc-vkn5r5zx4ke71f9hcu0c.energyweb.org/",
+  CACHE_SERVER_URL: 'https://identitycache-staging.energyweb.org/v1',
+  VOLTA_RPC_URL: "https://volta-rpc/",
   VOLTA_CHAIN_ID: 73799,
 };
 

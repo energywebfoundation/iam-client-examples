@@ -9,7 +9,7 @@ export const config: {
 } = {
   backendUrl: "http://localhost:3333",
   enrolmentUrl: "",
-  cacheServerUrl: "https://volta-identitycache.energyweb.org/v1",
+  cacheServerUrl: "https://identitycache-staging.energyweb.org/v1",
   chainRpcUrl: "https://volta-rpc.energyweb.org/",
   chainId: VOLTA_CHAIN_ID
 };
