@@ -17,7 +17,7 @@ export class AuthStrategy extends PassportStrategy(LoginStrategy, 'login') {
       rpcUrl: process.env.RPC_URL || 'https://volta-rpc.energyweb.org/',
       cacheServerUrl:
         process.env.CACHE_SERVER_URL ||
-        'https://identitycache-dev.energyweb.org/',
+        'https://identitycache-dev.energyweb.org/v1',
       acceptedRoles,
       privateKey:
         'eab5e5ccb983fad7bf7f5cb6b475a7aea95eff0c6523291b0c0ae38b5855459c',
