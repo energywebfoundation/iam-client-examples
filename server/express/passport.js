@@ -22,20 +22,35 @@ const jwtOptions = {
 };
 
 module.exports.preparePassport = () => {
-  passport.use(new LoginStrategy({
-    jwtSecret: private_secret,
-    jwtSignOptions: {
-      algorithm: 'RS256',
-    },
-    name: LOGIN_STRATEGY,
-    rpcUrl: process.env.RPC_URL || 'https://volta-rpc.energyweb.org/',
-    cacheServerUrl: process.env.CACHE_SERVER_URL || 'https://identitycache-dev.energyweb.org/v1',
-    acceptedRoles: process.env.ACCEPTED_ROLES ? process.env.ACCEPTED_ROLES.split(',') : [],
-    privateKey: 'eab5e5ccb983fad7bf7f5cb6b475a7aea95eff0c6523291b0c0ae38b5855459c',
-  }));
-  passport.use(new Strategy(jwtOptions, function (payload, done) {
-    return done(null, payload)
-  }));
+  passport.use(
+    new LoginStrategy({
+      jwtSecret: private_secret,
+      jwtSignOptions: {
+        algorithm: 'RS256',
+      },
+      name: LOGIN_STRATEGY,
+      rpcUrl: process.env.RPC_URL || 'https://volta-rpc.energyweb.org/',
+      cacheServerUrl:
+        process.env.CACHE_SERVER_URL ||
+        'https://identitycache-dev.energyweb.org/v1',
+      acceptedRoles: process.env.ACCEPTED_ROLES
+        ? process.env.ACCEPTED_ROLES.split(',')
+        : [],
+      privateKey:
+        'eab5e5ccb983fad7bf7f5cb6b475a7aea95eff0c6523291b0c0ae38b5855459c',
+      didContractAddress:
+        process.env.DID_REGISTRY_ADDRESS ||
+        '0xc15d5a57a8eb0e1dcbe5d88b8f9a82017e5cc4af',
+      ensRegistryAddress:
+        process.env.ENS_REGISTRY_ADDRESS ||
+        '0xd7CeF70Ba7efc2035256d828d5287e2D285CD1ac',
+    })
+  );
+  passport.use(
+    new Strategy(jwtOptions, function (payload, done) {
+      return done(null, payload);
+    })
+  );
   passport.serializeUser(function (user, done) {
     done(null, user);
   });
@@ -44,4 +59,4 @@ module.exports.preparePassport = () => {
     done(null, user);
   });
   return { passport, LOGIN_STRATEGY };
-}
+};
