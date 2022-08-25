@@ -6,10 +6,13 @@ module.exports = {
         Object.assign(fallback, { 
             "fs": require.resolve("browserify-fs"), 
             "stream": require.resolve("stream-browserify"),
-            "crypto": require.resolve("crypto-browserify")
+            "crypto": require.resolve("crypto-browserify"),
+            util: require.resolve('util/'),
+            url: require.resolve('url'),
+            assert: require.resolve('assert'),
+            buffer: require.resolve('buffer'),
           });
           webpackConfig.resolve.fallback = fallback; 
-          console.log(fallback, "THE FALL BACK")
         const wasmExtensionRegExp = /\.wasm$/;
         webpackConfig.resolve.extensions.push(".wasm");
         webpackConfig.experiments = {
