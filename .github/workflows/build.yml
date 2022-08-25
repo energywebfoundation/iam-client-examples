@@ -21,6 +21,7 @@ jobs:
     needs: cancel-previous
     env:
       APP_DIR: $HOME/work/iam-client-examples/iam-client-examples/client
+      CI: ""
     strategy:
       matrix:
         DAPPS: [angular-dapp, react-dapp, vue-dapp]
