@@ -4,7 +4,6 @@ import { config } from "./config";
 
 import {
   initWithEKC,
-  initWithGnosis,
   initWithMetamask,
   initWithPrivateKeySigner,
   initWithWalletConnect,
@@ -24,7 +23,6 @@ import walletconnectIcon from "./assets/wallet-connect-icon.svg";
 
 import "./App.css";
 import "./Login.css";
-import { safeAppSdk } from "./gnosis.safe.service";
 
 const { chainRpcUrl, chainId, cacheServerUrl } = config;
 
@@ -79,8 +77,8 @@ function App() {
           localStorage.getItem("PrivateKey") as string,
           chainRpcUrl
         );
-      case ProviderType.Gnosis:
-        return initWithGnosis(safeAppSdk);
+      // case ProviderType.Gnosis:
+      //   return initWithGnosis(safeAppSdk);
       case ProviderType.EKC:
         return initWithEKC();
       default:
@@ -103,15 +101,15 @@ function App() {
       localStorage.setItem("did", signerService.did);
       let {
         identityToken,
-      } = await await signerService.publicKeyAndIdentityToken();
+      } = await signerService.publicKeyAndIdentityToken();
       if (identityToken) {
-        await axios.post<{ token: string }>(
-          `${config.backendUrl}/login`,
-          {
-            identityToken,
-          },
-          { withCredentials: true }
-        );
+         await axios.post<{ token: string }>(
+            `${config.backendUrl}/login`,
+            {
+              identityToken,
+            },
+            { withCredentials: true }
+          );
       }
 
       const { data: roles } = await axios.get<Role[]>(

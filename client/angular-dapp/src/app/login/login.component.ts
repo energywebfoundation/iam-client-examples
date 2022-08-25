@@ -78,7 +78,7 @@ export class LoginComponent {
       localStorage.setItem('did', this.signerService.did);
       let {
         identityToken
-      } = await await this.signerService.publicKeyAndIdentityToken();
+      } = await this.signerService.publicKeyAndIdentityToken();
       if (identityToken) {
         await axios.post(
           `${environment.BACKEND_URL}/login`,
