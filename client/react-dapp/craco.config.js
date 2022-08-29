@@ -2,6 +2,9 @@ const webpack = require('webpack');
 module.exports = {
     webpack: {
       configure: (webpackConfig) => {
+        /*
+          Provide compatible modules as fallbacks for Node.js core modules:
+        */
         const fallback = webpackConfig.resolve.fallback || {};
         Object.assign(fallback, { 
             "fs": require.resolve("browserify-fs"), 
@@ -13,6 +16,9 @@ module.exports = {
             buffer: require.resolve('buffer'),
           });
           webpackConfig.resolve.fallback = fallback; 
+        /*
+          Add resolver for .wasm file extensions:
+        */
         const wasmExtensionRegExp = /\.wasm$/;
         webpackConfig.resolve.extensions.push(".wasm");
         webpackConfig.experiments = {
@@ -31,8 +37,6 @@ module.exports = {
                 Buffer: ['buffer', 'Buffer'],
             }),
         );
-        
-  
         return webpackConfig;
       },
     },
