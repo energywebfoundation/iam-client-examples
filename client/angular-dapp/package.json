@@ -30,6 +30,7 @@
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "^13.2.2",
+    "@ethersproject/abstract-signer": "^5.7.0",
     "@angular/cli": "13.2.2",
     "@angular/compiler-cli": "13.2.2",
     "@types/jasmine": "^4.0.3",
