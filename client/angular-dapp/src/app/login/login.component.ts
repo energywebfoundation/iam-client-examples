@@ -35,7 +35,6 @@ export class LoginComponent {
   roles: Role[] = JSON.parse(localStorage.getItem('roles')) || [];
 
   ngOnInit() {
-    console.log("IN INIT!")
     const loginStatus = async () => {
       try {
         const res = await axios.get(`${environment.BACKEND_URL}/login-status`, {
