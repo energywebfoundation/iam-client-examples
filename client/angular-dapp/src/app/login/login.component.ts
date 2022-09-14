@@ -3,7 +3,6 @@ import axios from 'axios';
 import { IamService } from '../iam.service';
 import { environment } from '../../environments/environment';
 import {
-  initWithEKC,
   initWithMetamask,
   initWithWalletConnect,
   ProviderType,
@@ -36,6 +35,7 @@ export class LoginComponent {
   roles: Role[] = JSON.parse(localStorage.getItem('roles')) || [];
 
   ngOnInit() {
+    console.log("IN INIT!")
     const loginStatus = async () => {
       try {
         const res = await axios.get(`${environment.BACKEND_URL}/login-status`, {
@@ -60,8 +60,6 @@ export class LoginComponent {
         return initWithMetamask();
       case ProviderType.WalletConnect:
         return initWithWalletConnect();
-      case ProviderType.EKC:
-        return initWithEKC();
       default:
         throw new Error(`no handler for provider '${providerType}'`);
     }
