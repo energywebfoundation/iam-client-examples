@@ -20,6 +20,8 @@ const { ExtractJwt, Strategy } = require('passport-jwt');
 const { verifyCredential } = require('didkit-wasm-node');
 const { providers } = require('ethers');
 
+const userPrivatekey = 'eab5e5ccb983fad7bf7f5cb6b475a7aea95eff0c6523291b0c0ae38b5855459c';
+const cacheServerUrl = 'https://identitycache-dev.energyweb.org/v1';
 const LOGIN_STRATEGY = 'login';
 const public_pem = fs.readFileSync('public.pem');
 const private_secret = fs.readFileSync('private.pem');
@@ -80,12 +82,14 @@ const didStore = new DidStore({
     : null,
 });
 
-const issuerResolver = new RoleIssuerResolver(domainReader);
-const revokerResolver = new RoleRevokerResolver(domainReader);
+const issuerResolver = new RoleIssuerResolver(domainReader, provider, userPrivatekey, cacheServerUrl);
+const revokerResolver = new RoleRevokerResolver(domainReader, provider, userPrivatekey, cacheServerUrl);
 const credentialResolver = new RoleCredentialResolver(
   provider,
   registrySettings,
-  didStore
+  didStore,
+  userPrivatekey,
+  cacheServerUrl
 );
 
 module.exports.preparePassport = () => {
@@ -100,12 +104,11 @@ module.exports.preparePassport = () => {
         rpcUrl: process.env.RPC_URL || 'https://volta-rpc.energyweb.org/',
         cacheServerUrl:
           process.env.CACHE_SERVER_URL ||
-          'https://identitycache-dev.energyweb.org/v1',
+          cacheServerUrl,
         acceptedRoles: process.env.ACCEPTED_ROLES
           ? process.env.ACCEPTED_ROLES.split(',')
           : [],
-        privateKey:
-          'eab5e5ccb983fad7bf7f5cb6b475a7aea95eff0c6523291b0c0ae38b5855459c',
+        privateKey: userPrivatekey,
         didContractAddress:
           process.env.DID_REGISTRY_ADDRESS ||
           '0xc15d5a57a8eb0e1dcbe5d88b8f9a82017e5cc4af',
