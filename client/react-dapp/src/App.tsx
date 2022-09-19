@@ -3,7 +3,6 @@ import axios from "axios";
 import { config } from "./config";
 
 import {
-  initWithEKC,
   initWithMetamask,
   initWithPrivateKeySigner,
   initWithWalletConnect,
@@ -18,7 +17,6 @@ import SourceCode from "./components/SourceCode";
 
 import metamaskLogo from "./assets/metamask-logo.svg";
 import logo from "./assets/logo.svg";
-import KMLogo from "./assets/key-manager-icon.svg";
 import walletconnectIcon from "./assets/wallet-connect-icon.svg";
 
 import "./App.css";
@@ -79,8 +77,6 @@ function App() {
         );
       // case ProviderType.Gnosis:
       //   return initWithGnosis(safeAppSdk);
-      case ProviderType.EKC:
-        return initWithEKC();
       default:
         throw new Error(`no handler for provider '${providerType}'`);
     }
@@ -207,15 +203,6 @@ function App() {
       >
         <img alt="metamask logo" className="metamask" src={metamaskLogo} />
         <span>Login with Metamask</span>
-      </button>
-      <button
-        className="button"
-        onClick={async () =>
-          await login({ providerType: ProviderType.EwKeyManager })
-        }
-      >
-        <img alt="metamask logo" className="metamask" src={KMLogo} />
-        <span>Login with EW Key Manager</span>
       </button>
     </div>
   );
