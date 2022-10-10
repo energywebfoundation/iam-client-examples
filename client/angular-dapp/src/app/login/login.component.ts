@@ -3,7 +3,6 @@ import axios from 'axios';
 import { IamService } from '../iam.service';
 import { environment } from '../../environments/environment';
 import {
-  initWithEKC,
   initWithMetamask,
   initWithWalletConnect,
   ProviderType,
@@ -60,8 +59,6 @@ export class LoginComponent {
         return initWithMetamask();
       case ProviderType.WalletConnect:
         return initWithWalletConnect();
-      case ProviderType.EKC:
-        return initWithEKC();
       default:
         throw new Error(`no handler for provider '${providerType}'`);
     }
@@ -72,7 +69,7 @@ export class LoginComponent {
     this.errored = false;
     this.unauthorized = false;
     try {
-      this.signerService = await (await this.initSignerService(providerType))
+      this.signerService = (await this.initSignerService(providerType))
         .signerService;
       this.did = this.signerService.did;
       localStorage.setItem('did', this.signerService.did);

@@ -68,10 +68,6 @@
           <img class="metamask" src="../assets/metamask-logo.svg" />
           <span>Login with Metamask</span>
         </button>
-        <button @click="login({ providerType: 'EwKeyManager' })" class="button">
-          <img class="metamask" src="../assets/key-manager-icon.svg" />
-          <span>Login with EW Key Manager</span>
-        </button>
       </div>
     </div>
   </div>
@@ -83,7 +79,6 @@ import Spinner from "./Spinner.vue";
 import axios from "axios";
 import { config } from "../config";
 import {
-  initWithEKC,
   initWithMetamask,
   initWithWalletConnect,
   ProviderType,
@@ -148,8 +143,6 @@ export default Vue.extend({
           return initWithMetamask();
         case ProviderType.WalletConnect:
           return initWithWalletConnect();
-        case ProviderType.EKC:
-          return initWithEKC();
         default:
           throw new Error(`no handler for provider '${providerType}'`);
       }
