@@ -4,9 +4,9 @@ import { ConnectedNetworkComponent } from './connected-network/connected-network
 import { UserDidComponent } from './user-did/user-did.component';
 import { UserNameComponent } from './user-name/user-name.component';
 import { MatIconModule } from '@angular/material/icon';
-import { CopyToClipboardModule } from '../../../shared/directives/copy-to-clipboard/copy-to-clipboard.module';
-import { DidFormatMinifierModule } from '../../../shared/pipes/did-format-minifier/did-format-minifier.module';
 import { UserMenuTriggerComponent } from './user-menu-trigger/user-menu-trigger.component';
+import { DidFormatMinifierModule } from '../pipes/did-format-minifier/did-format-minifier.module';
+import { CopyToClipboardModule } from '../directives/copy-to-clipboard/copy-to-clipboard.module';
 
 @NgModule({
   declarations: [
