@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import axios from 'axios';
 import { IamService } from '../iam.service';
 import { environment } from '../../environments/environment';
@@ -19,7 +19,7 @@ type Role = {
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
 })
-export class LoginComponent {
+export class LoginComponent implements OnInit {
   constructor(private readonly iamService: IamService) {}
   providers = ProviderType;
   isLoading = false;
