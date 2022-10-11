@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { LoginService } from '../services/login/login.service';
 
 @Component({
   selector: 'app-header',
@@ -7,9 +8,13 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class HeaderComponent {
-  accountInfo$;
+  did$ = this.loginService.did$;
+  wallet$ = this.loginService.wallet$;
 
-  logout() {
+  constructor(private loginService: LoginService) {
+  }
 
+  logout(): Promise<void> {
+    return this.loginService.logout();
   }
 }

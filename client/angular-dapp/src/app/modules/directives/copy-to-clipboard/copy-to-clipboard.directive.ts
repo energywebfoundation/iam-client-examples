@@ -1,11 +1,4 @@
-import {
-  Directive,
-  EventEmitter,
-  HostListener,
-  Input,
-  Output,
-} from '@angular/core';
-import { SwitchboardToastrService } from '../../services/switchboard-toastr.service';
+import { Directive, EventEmitter, HostListener, Input, Output, } from '@angular/core';
 
 @Directive({
   selector: '[appCopyToClipboard]',
@@ -15,8 +8,6 @@ export class CopyToClipboardDirective {
   @Input() public message: string;
 
   @Output() public copied: EventEmitter<string> = new EventEmitter<string>();
-
-  constructor(private toastr: SwitchboardToastrService) {}
 
   @HostListener('click', ['$event'])
   public onClick(event: MouseEvent): void {
@@ -30,8 +21,6 @@ export class CopyToClipboardDirective {
       clipboard.setData('text', this.copyClipboard.toString());
       e.preventDefault();
 
-      this.displayToastrMessage();
-
       this.copied.emit(this.copyClipboard);
     };
 
@@ -40,9 +29,4 @@ export class CopyToClipboardDirective {
     document.removeEventListener('copy', listener, false);
   }
 
-  displayToastrMessage(): void {
-    if (this.message) {
-      this.toastr.success(`${this.message} successfully copied to clipboard.`);
-    }
-  }
 }

@@ -1,16 +1,15 @@
-<div class="header-wrapper d-flex flex-grow-1 align-items-center justify-content-end">
-
-    <ng-container *ngIf="accountInfo$ | async as info">
+<div class="header-wrapper">
+    <ng-container *ngIf="did$ | async as did">
       <div class="btn-user-info" [matMenuTriggerFor]="menu" data-qa-id="menu-trigger">
-        <app-user-menu-trigger [userName]="info?.userName"> </app-user-menu-trigger>
+        <app-user-menu-trigger> </app-user-menu-trigger>
       </div>
-      <mat-menu #menu="matMenu" xPosition="before">
-        <div class="d-flex justify-content-center flex-column py-2 px-3">
-          <app-connected-network [chainName]="info?.accountInfo?.chainName" [wallet]="info?.wallet">
+      <mat-menu #menu="matMenu">
+        <div class="menu py-2 px-3">
+          <app-connected-network chainName="Energy Web Volta Testnet" [wallet]="wallet$ | async">
           </app-connected-network>
           <div>
-            <app-user-name [userName]="info?.userName"></app-user-name>
-            <app-user-did [did]="info?.did"></app-user-did>
+            <app-user-name></app-user-name>
+            <app-user-did [did]="did"></app-user-did>
           </div>
           <app-divider></app-divider>
           <button
@@ -23,4 +22,5 @@
         </div>
       </mat-menu>
     </ng-container>
+  <app-source-code></app-source-code>
 </div>

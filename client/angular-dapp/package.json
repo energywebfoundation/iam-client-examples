@@ -22,7 +22,6 @@
     "@angular/router": "13.2.2",
     "@angular/cdk": "^13.3.9",
     "@angular/material": "^13.3.9",
-    "axios": "^0.21.1",
     "crypto": "^1.0.1",
     "iam-client-lib": "^6.2.0",
     "rxjs": "~6.6.0",

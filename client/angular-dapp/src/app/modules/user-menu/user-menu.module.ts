@@ -7,6 +7,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { UserMenuTriggerComponent } from './user-menu-trigger/user-menu-trigger.component';
 import { DidFormatMinifierModule } from '../pipes/did-format-minifier/did-format-minifier.module';
 import { CopyToClipboardModule } from '../directives/copy-to-clipboard/copy-to-clipboard.module';
+import { DividerComponent } from '../../components/divider/divider.component';
 
 @NgModule({
   declarations: [
@@ -14,6 +15,7 @@ import { CopyToClipboardModule } from '../directives/copy-to-clipboard/copy-to-c
     UserDidComponent,
     UserNameComponent,
     UserMenuTriggerComponent,
+    DividerComponent,
   ],
   imports: [
     CommonModule,
@@ -26,6 +28,7 @@ import { CopyToClipboardModule } from '../directives/copy-to-clipboard/copy-to-c
     UserDidComponent,
     UserNameComponent,
     UserMenuTriggerComponent,
+    DividerComponent,
   ],
 })
 export class UserMenuModule {}
