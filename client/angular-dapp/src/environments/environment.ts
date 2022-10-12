@@ -7,7 +7,7 @@ export const environment = {
   ENROLMENT_URL: '',
   BACKEND_URL: 'http://localhost:3333',
   CACHE_SERVER_URL: 'https://identitycache-staging.energyweb.org/v1',
-  VOLTA_RPC_URL: "https://volta-rpc/",
+  VOLTA_RPC_URL: 'https://volta-rpc/',
   VOLTA_CHAIN_ID: 73799,
 };
 

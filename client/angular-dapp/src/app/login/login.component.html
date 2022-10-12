@@ -4,7 +4,7 @@
     <span> Loading... (Please sign messages using your connected wallet) </span>
   </div>
   <ng-template #notLoading>
-    <div *ngIf="did; else noDID">
+    <div *ngIf="(did$ | async) as did; else noDID">
       <p>Hello user!</p>
       <p>
         Your decentralised identifier: <strong>{{ did }}</strong>

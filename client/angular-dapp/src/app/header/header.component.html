@@ -1,0 +1,26 @@
+<div class="header-wrapper">
+    <ng-container *ngIf="did$ | async as did">
+      <div class="btn-user-info" [matMenuTriggerFor]="menu" data-qa-id="menu-trigger">
+        <app-user-menu-trigger> </app-user-menu-trigger>
+      </div>
+      <mat-menu #menu="matMenu">
+        <div class="menu py-2 px-3">
+          <app-connected-network chainName="Energy Web Volta Testnet" [wallet]="wallet$ | async">
+          </app-connected-network>
+          <div>
+            <app-user-name></app-user-name>
+            <app-user-did [did]="did"></app-user-did>
+          </div>
+          <app-divider></app-divider>
+          <button
+            mat-raised-button
+            data-qa-id="logout"
+            class="connect-btn text-color text-uppercase my-2"
+            (click)="logout()">
+            Disconnect from Metamask
+          </button>
+        </div>
+      </mat-menu>
+    </ng-container>
+  <app-source-code></app-source-code>
+</div>

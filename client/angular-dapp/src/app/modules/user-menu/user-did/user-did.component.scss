@@ -1,0 +1,25 @@
+.did-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 7px 0.2rem 0 0.2rem;
+  letter-spacing: 0.3px;
+  border-radius: 50px;
+  padding: 8px 12px;
+  cursor: pointer;
+  background-color: #f4fdff;
+  color: #aaaaaa;
+
+  mat-icon {
+    width: 18px;
+    height: 18px;
+    font-size: 14px;
+    padding-top: 2px;
+  }
+
+  &:hover {
+    mat-icon {
+      color: #4c2cdf;
+    }
+  }
+}

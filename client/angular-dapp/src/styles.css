@@ -1,1 +1,14 @@
-/* You can add global styles to this file, and also import other style files */
+@import '@angular/material/prebuilt-themes/deeppurple-amber.css'; /* You can add global styles to this file, and also import other style files */
+html, body {
+  height: 100%;
+  background-color: #ecf0f3;
+  margin: 0;
+  padding: 0;
+}
+body {
+  background-image: url('src/assets/images/staking-gradient-background.png');
+  background-position: top;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
