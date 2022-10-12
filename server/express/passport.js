@@ -71,16 +71,7 @@ const registrySettings = {
   address: didRegistryAddress,
   method: Methods.Erc1056,
 };
-const didStore = new DidStore({
-  host: IPFS_HOST,
-  port: IPFS_PORT,
-  protocol: 'https',
-  headers: auth
-    ? {
-        authorization: auth,
-      }
-    : null,
-});
+const didStore = new DidStore('https://ewipfsgwtest.infura-ipfs.io');
 
 const issuerResolver = new RoleIssuerResolver(domainReader, provider, userPrivatekey, cacheServerUrl);
 const revokerResolver = new RoleRevokerResolver(domainReader, provider, userPrivatekey, cacheServerUrl);
