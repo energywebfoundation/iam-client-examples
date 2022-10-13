@@ -1,0 +1,23 @@
+:host {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 35px;
+
+}
+
+.table-container {
+  width: 100%;
+  max-height: 400px;
+  min-height: 200px;
+  overflow: auto;
+}
+
+table {
+  width: 100%;
+}
+
+td {
+  text-align: left;
+}
+

@@ -9,18 +9,7 @@
       <p>
         Your decentralised identifier: <strong>{{ did }}</strong>
       </p>
-      <div *ngIf="roles.length > 0; else noRoles" class="rolesContainer">
-        <p>These are your validated roles:</p>
-        <p *ngFor="let role of roles">
-          <strong>{{ role.name }}</strong> at {{ role.namespace }}
-        </p>
-      </div>
-      <ng-template #noRoles>
-        <div>
-          You do not have any issued role at the moment, please login into
-          switchboard and search for apps, orgs to enrol.
-        </div>
-      </ng-template>
+      <app-role-list [roles]="roles"></app-role-list>
       <div class="logoutContainer">
         <a *ngIf="enrolmentURL" href="{{ enrolmentURL }}" class="button">
           <span>Enrol to test role</span>

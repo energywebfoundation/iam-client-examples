@@ -1,0 +1,24 @@
+<div class="table-container" *ngIf="roles.length > 0; else noRoles">
+  <p>These are your validated roles:</p>
+  <table mat-table [dataSource]="roles" class="mat-elevation-z8">
+    <ng-container matColumnDef="name" [sticky]="true">
+      <th mat-header-cell *matHeaderCellDef> Name</th>
+      <td mat-cell *matCellDef="let element"> {{element.name}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="namespace" [sticky]="true">
+      <th mat-header-cell *matHeaderCellDef> Namespace</th>
+      <td mat-cell *matCellDef="let element"> {{element.namespace}} </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+  </table>
+</div>
+
+<ng-template #noRoles>
+  <div>
+    You do not have any issued role at the moment, please login into
+    switchboard and search for apps, orgs to enrol.
+  </div>
+</ng-template>
