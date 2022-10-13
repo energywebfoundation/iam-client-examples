@@ -1,0 +1,45 @@
+:host {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 35px;
+
+}
+
+.table-container {
+  width: 100%;
+  max-height: 400px;
+  min-height: 200px;
+  overflow: auto;
+}
+
+table {
+  width: 100%;
+}
+
+td {
+  text-align: left;
+}
+
+:host ::ng-deep thead {
+  background: linear-gradient(180deg, #c7f5fd 0%, #e6fdff 32.23%, #c1d7fb 100%),
+  radial-gradient(
+    184.5% 68.24% at 169.12% 8.09%,
+    #edffff 32.52%,
+    #dbedff 71.15%,
+    #cbdff4 91.96%
+  );
+}
+
+:host ::ng-deep tbody tr {
+  &:nth-child(2n) {
+    background: rgba(199, 245, 253, 0.8);
+   }
+
+  &:nth-child(2n + 1) {
+    background: rgba(230, 253, 255, 0.8)
+   }
+
+
+}
+
