@@ -22,6 +22,7 @@ const { providers } = require('ethers');
 
 const userPrivatekey = 'eab5e5ccb983fad7bf7f5cb6b475a7aea95eff0c6523291b0c0ae38b5855459c';
 const cacheServerUrl = 'https://identitycache-dev.energyweb.org/v1';
+const IPFS_GATEWAY_URL= 'https://ewipfsgwtest.infura-ipfs.io';
 const LOGIN_STRATEGY = 'login';
 const public_pem = fs.readFileSync('public.pem');
 const private_secret = fs.readFileSync('private.pem');
@@ -43,15 +44,6 @@ const jwtOptions = {
 const provider = new providers.JsonRpcProvider(
   'https://volta-rpc.energyweb.org/'
 );
-const IPFS_HOST = 'ipfs.infura.io';
-const IPFS_PORT = 5001;
-const IPFS_PROJECTID = '2DTpW5Ddx5odgzd8tY1lzPCRSeF';
-const IPFS_PROJECTSECRET = 'f0b2110757d2c0642c5d7a62ed84d9bf';
-
-const auth =
-  'Basic ' +
-  Buffer.from(IPFS_PROJECTID + ':' + IPFS_PROJECTSECRET).toString('base64');
-
 const didRegistryAddress = VOLTA_ERC_1056_ADDRESS;
 const ensRegistryAddress = VOLTA_ENS_REGISTRY_ADDRESS;
 const ensResolverAddress = VOLTA_RESOLVER_V2_ADDRESS;
@@ -71,7 +63,7 @@ const registrySettings = {
   address: didRegistryAddress,
   method: Methods.Erc1056,
 };
-const didStore = new DidStore('https://ewipfsgwtest.infura-ipfs.io');
+const didStore = new DidStore(IPFS_GATEWAY_URL);
 
 const issuerResolver = new RoleIssuerResolver(domainReader, provider, userPrivatekey, cacheServerUrl);
 const revokerResolver = new RoleRevokerResolver(domainReader, provider, userPrivatekey, cacheServerUrl);
