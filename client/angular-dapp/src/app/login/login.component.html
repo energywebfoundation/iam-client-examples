@@ -14,7 +14,7 @@
         <a *ngIf="enrolmentURL" href="{{ enrolmentURL }}" class="button">
           <span>Enrol to test role</span>
         </a>
-        <button (click)="logout()" class="button">
+        <button mat-raised-button (click)="logout()" class="button">
           <span>Logout</span>
         </button>
       </div>
@@ -45,6 +45,7 @@
       </div>
       <div class="container">
         <button
+          mat-raised-button
           (click)="login({ providerType: providers.WalletConnect })"
           class="button"
         >
@@ -52,6 +53,7 @@
           <span>Login with Wallet Connect</span>
         </button>
         <button
+          mat-raised-button
           (click)="login({ providerType: providers.MetaMask })"
           class="button"
         >
