@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { Role } from '../../models/role';
 
 @Component({
@@ -6,11 +6,7 @@ import { Role } from '../../models/role';
   templateUrl: './role-list.component.html',
   styleUrls: ['./role-list.component.scss']
 })
-export class RoleListComponent implements OnInit {
+export class RoleListComponent {
   @Input() roles: Role[];
-  displayedColumns = ['name', 'namespace'];
-
-  ngOnInit(): void {
-  }
-
+  displayedColumns = ['name', 'namespace', 'status'];
 }

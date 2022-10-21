@@ -28,7 +28,7 @@ app.post("/login", passport.authenticate(LOGIN_STRATEGY), (req, res) => {
 });
 
 app.get("/roles", passport.authenticate("jwt"), (req, res) => {
-  res.json(req.user.verifiedRoles);
+  res.json(req.user.userRoles);
 });
 
 app.get("/user", passport.authenticate("jwt"), (req, res) => {
