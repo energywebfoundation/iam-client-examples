@@ -51,6 +51,12 @@ export class LoginComponent implements OnInit {
       finalize(() => this.isLoading = false)
     ).subscribe(({roles}) => {
       this.roles = roles;
+    }, error => {
+      if (error?.status === 401) {
+        this.unauthorized = true;
+      } else {
+        this.errored = true;
+      }
     });
   }
 

@@ -1,5 +1,5 @@
 <div class="table-container" *ngIf="roles.length > 0; else noRoles">
-  <p>These are your validated roles:</p>
+  <p>{{title}}</p>
   <table mat-table [dataSource]="roles" class="mat-elevation-z8">
     <ng-container matColumnDef="name" [sticky]="true">
       <th mat-header-cell *matHeaderCellDef> Name</th>

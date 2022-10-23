@@ -8,5 +8,6 @@ import { Role } from '../../models/role';
 })
 export class RoleListComponent {
   @Input() roles: Role[];
+  @Input() title: string;
   displayedColumns = ['name', 'namespace', 'status'];
 }

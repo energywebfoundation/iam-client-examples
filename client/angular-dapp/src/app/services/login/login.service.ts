@@ -68,6 +68,7 @@ export class LoginService {
     // tslint:disable-next-line:no-unused-expression
     this.signerService && (await this.signerService.closeConnection());
     this.did.next('');
+    this.isAuthorized.next(false);
     localStorage.clear();
   }
 
