@@ -5,7 +5,7 @@ import { ProviderType, SignerService } from 'iam-client-lib';
 import { LoginService } from '../services/login/login.service';
 import { RolesService } from '../services/roles/roles.service';
 import { Role } from '../models/role';
-import { filter, finalize, switchMap } from 'rxjs/operators';
+import { filter, finalize, switchMap, tap } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 
 @Component({
@@ -20,6 +20,7 @@ export class LoginComponent implements OnInit {
   unauthorized = false;
   signerService: SignerService = null;
   did$: Observable<string> = this.loginService.did$;
+  isAuthorized$: Observable<boolean> = this.loginService.isAuthorized$;
   enrolmentURL = environment.ENROLMENT_URL
     ? `${environment.ENROLMENT_URL}&returnUrl=${encodeURIComponent(
       window.location.href
@@ -39,17 +40,17 @@ export class LoginComponent implements OnInit {
     this.errored = false;
     this.unauthorized = false;
 
+    this.isAuthorized$.pipe(
+      filter(Boolean),
+      tap(() => this.isLoading = true),
+      switchMap(() => this.rolesService.get().pipe(finalize(() => this.isLoading = false)))
+    ).subscribe(roles => this.roles = roles);
+
     this.loginService.login(providerType).pipe(
       filter(({did}) => Boolean(did)),
-      switchMap(() => this.rolesService.get().pipe(finalize(() => this.isLoading = false))),
-    ).subscribe(roles => this.roles = roles, error => {
-      console.log(error);
-      if (error?.status === 401) {
-        this.unauthorized = true;
-      } else {
-        this.errored = true;
-      }
-      this.isLoading = false;
+      finalize(() => this.isLoading = false)
+    ).subscribe(({roles}) => {
+      this.roles = roles;
     });
   }
 
