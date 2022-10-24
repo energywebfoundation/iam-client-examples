@@ -23,7 +23,8 @@
       <ng-container *ngIf="roles.length > 0; else noRoles">
         <p>Hello!</p>
         <p>
-          You're not logged in because you do not have required roles. Please look below on what roles you're missing.
+          You're not logged in because you do not have required roles.
+          The table below may show roles which you have but are expired or revoked.
         </p>
         <app-role-list [roles]="roles" title="These are your roles:"></app-role-list>
       </ng-container>
