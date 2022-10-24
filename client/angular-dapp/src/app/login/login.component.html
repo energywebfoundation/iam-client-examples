@@ -4,12 +4,12 @@
     <span> Loading... (Please sign messages using your connected wallet) </span>
   </div>
   <ng-template #notLoading>
-    <div *ngIf="(did$ | async) as did; else noDID">
+    <div *ngIf="(isAuthorized$ | async); else notAuthorized">
       <p>Hello user!</p>
       <p>
-        Your decentralised identifier: <strong>{{ did }}</strong>
+        Your decentralised identifier: <strong>{{ did$ | async }}</strong>
       </p>
-      <app-role-list [roles]="roles"></app-role-list>
+      <app-role-list [roles]="roles" title="These are your validated roles:"></app-role-list>
       <div class="logoutContainer">
         <a *ngIf="enrolmentURL" href="{{ enrolmentURL }}" class="button">
           <span>Enrol to test role</span>
@@ -19,30 +19,42 @@
         </button>
       </div>
     </div>
-    <ng-template #noDID>
-      <div *ngIf="unauthorized">
+    <ng-template #notAuthorized>
+      <ng-container *ngIf="roles.length > 0; else noRoles">
+        <p>Hello!</p>
         <p>
-          Unauthorized login response.
-          <br />
-          Please ensure that you have the necessary role claim.
+          You're not logged in because you do not have required roles.
+          The table below may show roles which you have but are expired or revoked.
         </p>
-        <div *ngIf="enrolmentURL" class="enrolbuttonContainer">
-          <p>Use enrolment button to request necessary role.</p>
-          <a href="{{ enrolmentURL }}" class="button">
-            <span>Enrol to test role</span>
-          </a>
+        <app-role-list [roles]="roles" title="These are your roles:"></app-role-list>
+      </ng-container>
+
+      <ng-template #noRoles>
+        <div *ngIf="unauthorized">
+          <p>
+            Unauthorized login response.
+            <br />
+            Please ensure that you have the necessary role claim.
+          </p>
+          <div *ngIf="enrolmentURL" class="enrolbuttonContainer">
+            <p>Use enrolment button to request necessary role.</p>
+            <a href="{{ enrolmentURL }}" class="button">
+              <span>Enrol to test role</span>
+            </a>
+          </div>
         </div>
-      </div>
-      <div *ngIf="errored">
-        <p>
-          Error occured with login.<br />
-          If you rejected the signing requests, please try again and accept.<br />
-          If this is your first time logging in, your account needs a small
-          amount of Volta token to create a DID Document.<br />
-          A Volta token can be obtained from the
-          <a href="https://voltafaucet.energyweb.org/">Volta Faucet</a>.
-        </p>
-      </div>
+        <div *ngIf="errored">
+          <p>
+            Error occured with login.<br />
+            If you rejected the signing requests, please try again and accept.<br />
+            If this is your first time logging in, your account needs a small
+            amount of Volta token to create a DID Document.<br />
+            A Volta token can be obtained from the
+            <a href="https://voltafaucet.energyweb.org/">Volta Faucet</a>.
+          </p>
+        </div>
+      </ng-template>
+
       <div class="container">
         <button
           mat-raised-button

@@ -5,12 +5,16 @@ import { environment } from '../../../environments/environment';
 import { catchError, map, switchMap, tap } from 'rxjs/operators';
 import { BehaviorSubject, from, Observable, of } from 'rxjs';
 import { SignerService } from 'iam-client-lib/dist/src/modules/signer';
+import { Role } from '../../models/role';
+
+type LoginToken = string & { authorizationStatus: boolean; did: string; userRoles: Role[] };
 
 @Injectable({providedIn: 'root'})
 export class LoginService {
-  private did = new BehaviorSubject(localStorage.getItem('did') || '');
-  private provider = new BehaviorSubject<ProviderType>(localStorage.getItem('provider') as ProviderType || null);
+  private did = new BehaviorSubject('');
+  private provider = new BehaviorSubject<ProviderType>( null);
   private signerService: SignerService;
+  private isAuthorized = new BehaviorSubject(false);
 
   constructor(private httpClient: HttpClient) {
   }
@@ -23,7 +27,11 @@ export class LoginService {
     return this.did.asObservable();
   }
 
-  login(providerType: ProviderType): Observable<{ did: string }> {
+  get isAuthorized$(): Observable<boolean> {
+    return this.isAuthorized.asObservable();
+  }
+
+  login(providerType: ProviderType): Observable<{ did: string, roles: Role[] }> {
     return from(this.initSignerService(providerType))
       .pipe(
         tap(({signerService}) => this.signerService = signerService),
@@ -32,7 +40,12 @@ export class LoginService {
             this.setDID();
             this.setProvider(providerType);
           }),
-          map(() => ({did: this.did.getValue()}))))
+          map((response: { token: LoginToken }) => {
+            if (typeof response?.token === 'string') {
+              this.isAuthorized.next(true);
+            }
+            return ({did: this.did.getValue(), roles: response.token?.userRoles || []});
+          })))
       );
   }
 
@@ -55,6 +68,7 @@ export class LoginService {
     // tslint:disable-next-line:no-unused-expression
     this.signerService && (await this.signerService.closeConnection());
     this.did.next('');
+    this.isAuthorized.next(false);
     localStorage.clear();
   }
 
@@ -67,16 +81,14 @@ export class LoginService {
       default:
         throw new Error(`no handler for provider '${providerType}'`);
     }
-  };
+  }
 
   private setDID(): void {
     this.did.next(this.signerService.did);
-    localStorage.setItem('did', this.signerService.did);
   }
 
   private setProvider(provider: ProviderType): void {
     this.provider.next(provider);
-    localStorage.setItem('provider', provider);
   }
 
   private connectToBackend(): Observable<unknown> {

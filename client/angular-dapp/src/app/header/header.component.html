@@ -1,5 +1,5 @@
 <div class="header-wrapper">
-    <ng-container *ngIf="did$ | async as did">
+    <ng-container *ngIf="isAuthorized$ | async">
       <div class="btn-user-info" [matMenuTriggerFor]="menu" data-qa-id="menu-trigger">
         <app-user-menu-trigger> </app-user-menu-trigger>
       </div>
@@ -9,7 +9,7 @@
           </app-connected-network>
           <div>
             <app-user-name></app-user-name>
-            <app-user-did [did]="did"></app-user-did>
+            <app-user-did [did]="did$ | async"></app-user-did>
           </div>
           <app-divider></app-divider>
           <button

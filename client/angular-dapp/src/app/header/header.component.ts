@@ -9,6 +9,7 @@ import { LoginService } from '../services/login/login.service';
 })
 export class HeaderComponent {
   did$ = this.loginService.did$;
+  isAuthorized$ = this.loginService.isAuthorized$;
   wallet$ = this.loginService.wallet$;
 
   constructor(private loginService: LoginService) {
