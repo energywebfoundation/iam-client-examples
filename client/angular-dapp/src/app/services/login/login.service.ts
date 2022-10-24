@@ -11,8 +11,8 @@ type LoginToken = string & { authorizationStatus: boolean; did: string; userRole
 
 @Injectable({providedIn: 'root'})
 export class LoginService {
-  private did = new BehaviorSubject(localStorage.getItem('did') || '');
-  private provider = new BehaviorSubject<ProviderType>(localStorage.getItem('provider') as ProviderType || null);
+  private did = new BehaviorSubject('');
+  private provider = new BehaviorSubject<ProviderType>( null);
   private signerService: SignerService;
   private isAuthorized = new BehaviorSubject(false);
 
@@ -85,12 +85,10 @@ export class LoginService {
 
   private setDID(): void {
     this.did.next(this.signerService.did);
-    localStorage.setItem('did', this.signerService.did);
   }
 
   private setProvider(provider: ProviderType): void {
     this.provider.next(provider);
-    localStorage.setItem('provider', provider);
   }
 
   private connectToBackend(): Observable<unknown> {

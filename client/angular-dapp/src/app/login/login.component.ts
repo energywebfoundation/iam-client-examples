@@ -26,7 +26,7 @@ export class LoginComponent implements OnInit {
       window.location.href
     )}`
     : '';
-  roles: Role[] = JSON.parse(localStorage.getItem('roles')) || [];
+  roles: Role[] = [];
 
   constructor(private readonly iamService: IamService, private loginService: LoginService, private rolesService: RolesService) {
   }
@@ -52,6 +52,7 @@ export class LoginComponent implements OnInit {
     ).subscribe(({roles}) => {
       this.roles = roles;
     }, error => {
+      this.clearRoleList();
       if (error?.status === 401) {
         this.unauthorized = true;
       } else {
@@ -62,5 +63,9 @@ export class LoginComponent implements OnInit {
 
   async logout(): Promise<void> {
     await this.loginService.logout();
+  }
+
+  private clearRoleList() {
+    this.roles = [];
   }
 }
