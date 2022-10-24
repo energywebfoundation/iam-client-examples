@@ -27,11 +27,10 @@ This tutorial demonstrates the use of a web client to authenticate to a server u
 - Complete general [example prequisites](prerequisites)
 - Access to a wallet account whose Volta DID Document has a role claim (corresponding to a Switchboard role)
 
-### 1. Run the react client application
-1. Navigate to the React client example: `cd client/react-dapp`
-2. Edit the backend url in `src/config.ts` to `http://localhost:3333`
-3. Install the dependencies: `npm install`
-4. Start the React client: `npm run start`. This should start the React client at `http://localhost:3000`
+### 1. Run the Angular client application
+1. Navigate to the Angular client example: `cd client/angular-dapp`
+2. Install the dependencies: `npm install`
+3. Start the Angular client: `npm run start`. This should start the Angular client at `http://localhost:4200`
 
 #### 2. Setup the server application
 
@@ -43,7 +42,7 @@ This tutorial demonstrates the use of a web client to authenticate to a server u
 
 #### 3. Login using wallet account
 
-1. Navigate to `http://localhost:3000` and log in using MetaMask or WalletConnect. The Switchboard role claims of your wallet account should be displayed.
+1. Navigate to `http://localhost:4200` and log in using MetaMask or WalletConnect. The Switchboard role claims of your wallet account should be displayed.
 
 #### 4. Configure server to check for a role which your wallet account does not have
 
