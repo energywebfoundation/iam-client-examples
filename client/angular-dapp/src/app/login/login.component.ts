@@ -62,10 +62,11 @@ export class LoginComponent implements OnInit {
   }
 
   async logout(): Promise<void> {
+    this.clearRoleList();
     await this.loginService.logout();
   }
 
-  private clearRoleList() {
+  private clearRoleList(): void {
     this.roles = [];
   }
 }
