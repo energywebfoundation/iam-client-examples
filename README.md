@@ -34,9 +34,8 @@ This tutorial demonstrates the use of a web client to authenticate to a server u
 
 #### 2. Setup the server application
 
-1. In a new shell, navigate to the server example. You got one of two options to choose from: 
-- Express server example: `cd server/express`, 
-- or Nest.js server example: `cd server/nestjs`
+1. In a new shell, navigate to the server example.
+- `cd server/express`, 
 2. Install the dependencies: `npm install`
 3. Start the Express server: `npm run start`. This should start the Express app at `http://localhost:3333`
 
