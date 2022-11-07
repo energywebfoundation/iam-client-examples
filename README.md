@@ -10,10 +10,6 @@
 
 This repository contains client examples which leverage the [iam-client-lib](https://github.com/energywebfoundation/iam-client-lib) and communicate with a [hosted backend](server/express) to authenticate and authorize a user using DIDs (Decentralized Identifiers) and VCs (Verifiable Credentials).
 
-##
-
-![IAM-client-lib demos](screenshots/react-angular-vue_demos.png)
-
 ## Hosted Examples
 
 [![react logo](client/react-dapp/src/assets/react-icon.png) React Demo](https://did-auth-demo.energyweb.org/react-example/) / [![angular logo](client/angular-dapp/src/assets/angular-icon.png) Angular Demo](https://did-auth-demo.energyweb.org/angular-example/)
