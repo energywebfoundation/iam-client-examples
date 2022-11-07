@@ -23,7 +23,7 @@ jobs:
       APP_DIR: $HOME/work/iam-client-examples/iam-client-examples/client
     strategy:
       matrix:
-        DAPPS: [angular-dapp, react-dapp, vue-dapp]
+        DAPPS: [angular-dapp, react-dapp]
 
     steps:
       - uses: actions/checkout@v2
