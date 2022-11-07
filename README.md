@@ -10,13 +10,9 @@
 
 This repository contains client examples which leverage the [iam-client-lib](https://github.com/energywebfoundation/iam-client-lib) and communicate with a [hosted backend](server/express) to authenticate and authorize a user using DIDs (Decentralized Identifiers) and VCs (Verifiable Credentials).
 
-##
-
-![IAM-client-lib demos](screenshots/react-angular-vue_demos.png)
-
 ## Hosted Examples
 
-[![react logo](client/react-dapp/src/assets/react-icon.png) React Demo](https://did-auth-demo.energyweb.org/react-example/) / [![angular logo](client/angular-dapp/src/assets/angular-icon.png) Angular Demo](https://did-auth-demo.energyweb.org/angular-example/) / [![vue logo](client/vue-dapp/src/assets/vue-icon.png) Vue Demo](https://did-auth-demo.energyweb.org/vue-example/)
+[![react logo](client/react-dapp/src/assets/react-icon.png) React Demo](https://did-auth-demo.energyweb.org/react-example/) / [![angular logo](client/angular-dapp/src/assets/angular-icon.png) Angular Demo](https://did-auth-demo.energyweb.org/angular-example/)
 
 ## Tutorial
 
@@ -70,7 +66,6 @@ This tutorial demonstrates the use of a web client to authenticate to a server u
 The client examples can be configured by editing their configuration files:
 
 - React configuration file is at `client/react-dapp/src/config.ts`
-- Vue configuration file is at `client/vue-dapp/src/config.ts`
 - Angular configuration file is at `client/angular-dapp/src/environments/environment.ts`
 - Delegate authentication configuration file is at `client/delegate-auth/config.ts` (make sure you followed the step 2 `Setup the server application` or adapt `backendUrl` to reference a hosted backed)
 
@@ -93,7 +88,7 @@ PRIVATE_KEY = <Your private key>
 
 To run the client examples, please follow below steps:
 
-1. Navigate to the app that you want to run: `cd client/angular-dapp` or `cd client/react-dapp` or `cd client/vue-dapp` or `cd client/delegate-auth`
+1. Navigate to the app that you want to run: `cd client/angular-dapp` or `cd client/react-dapp` or `cd client/delegate-auth`
 2. Install dependencies: `npm install`
 3. Run application: `npm start`
 
