@@ -18,6 +18,6 @@
     "iam-client-lib": "^6.2.0",
     "node-emoji": "^1.11.0",
     "ts-node": "^10.2.1",
-    "typescript": "^4.4.2"
+    "typescript": "^4.9.4"
   }
 }
