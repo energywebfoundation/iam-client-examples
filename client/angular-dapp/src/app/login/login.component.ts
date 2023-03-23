@@ -35,7 +35,7 @@ export class LoginComponent implements OnInit {
     this.loginService.checkStatus();
   }
 
-  login({providerType}: { providerType: ProviderType }): void {
+  async login({providerType}: { providerType: ProviderType }): Promise<void> {
     this.isLoading = true;
     this.errored = false;
     this.unauthorized = false;
@@ -46,7 +46,7 @@ export class LoginComponent implements OnInit {
       switchMap(() => this.rolesService.get().pipe(finalize(() => this.isLoading = false)))
     ).subscribe(roles => this.roles = roles);
 
-    this.loginService.login(providerType).pipe(
+    (await this.loginService.login(providerType)).pipe(
       filter(({did}) => Boolean(did)),
       finalize(() => this.isLoading = false)
     ).subscribe(({roles}) => {

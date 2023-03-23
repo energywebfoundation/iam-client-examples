@@ -98,6 +98,8 @@ module.exports.preparePassport = () => {
         ensRegistryAddress:
           process.env.ENS_REGISTRY_ADDRESS ||
           '0xd7CeF70Ba7efc2035256d828d5287e2D285CD1ac',
+        siweMessageUri: `${process.env.CACHE_SERVER_URL ||
+          cacheServerUrl}/login/siwe/verify`
       },
       issuerResolver,
       revokerResolver,
