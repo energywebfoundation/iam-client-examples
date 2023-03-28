@@ -6,6 +6,7 @@ import { catchError, map, switchMap, tap } from 'rxjs/operators';
 import { BehaviorSubject, from, Observable, of } from 'rxjs';
 import { SignerService } from 'iam-client-lib/dist/src/modules/signer';
 import { Role } from '../../models/role';
+import { SiweMessage } from 'siwe';
 
 type LoginToken = string & { authorizationStatus: boolean; did: string; userRoles: Role[] };
 
@@ -15,6 +16,7 @@ export class LoginService {
   private provider = new BehaviorSubject<ProviderType>( null);
   private signerService: SignerService;
   private isAuthorized = new BehaviorSubject(false);
+  private readonly url = environment.BACKEND_URL;
 
   constructor(private httpClient: HttpClient) {
   }
@@ -91,11 +93,27 @@ export class LoginService {
     this.provider.next(provider);
   }
 
-  private connectToBackend(): Observable<unknown> {
-    return from(this.signerService.publicKeyAndIdentityToken()).pipe(switchMap((({identityToken}) => this.httpClient.post(
-        `${environment.BACKEND_URL}/login`,
+  private async connectToBackend(): Observable<unknown> {
+    const {
+      data: { nonce },
+    } = this.httpClient.post<{ nonce: string; }>('/login/siwe/initiate');
+    const uri = new URL('/v1/login/siwe/verify', new URL(this.url).origin)
+      .href;
+    const message = new SiweMessage({
+      nonce,
+      domain: new URL(this.url).host,
+      address: this.signerService.address,
+      uri,
+      version: '1',
+      chainId: this.signerService.chainId,
+    }).prepareMessage();
+
+    const signature = await this.signerService.signer.signMessage(message);
+
+    return from(signature).pipe(switchMap(((signature) => this.httpClient.post(
+        `${this.url}/v1/login/siwe/verify`,
         {
-          identityToken
+          signature
         },
         {withCredentials: true}
       )))
