@@ -21,6 +21,7 @@
     "@angular/router": "13.2.2",
     "@angular/cdk": "^13.3.9",
     "@angular/material": "^13.3.9",
+    "@sphereon/pex": "1.1.0",
     "crypto": "^1.0.1",
     "iam-client-lib": "^8.0.0-alpha.3",
     "rxjs": "~6.6.0",
