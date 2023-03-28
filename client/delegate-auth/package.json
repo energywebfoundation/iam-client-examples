@@ -9,7 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@ew-did-registry/jwt": "^0.5.2-alpha.90.0",
+    "@ew-did-registry/jwt": "^0.8.0",
     "@ew-did-registry/keys": "^0.5.2-alpha.90.0",
     "@types/node-emoji": "^1.8.1",
     "axios": "^0.21.4",
