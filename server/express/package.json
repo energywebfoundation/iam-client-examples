@@ -17,7 +17,7 @@
     "cookie-parser": "^1.4.5",
     "cors": "^2.8.5",
     "didkit-wasm-node": "0.1.6",
-    "express": "^4.17.1",
+    "express": "^4.19.2",
     "morgan": "^1.10.0",
     "passport": "^0.4.1",
     "passport-did-auth": "^2.0.0",
